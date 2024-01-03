@@ -1,0 +1,34 @@
+# Ignore OS files and folders
+/.Trash*/
+/lost+found/
+
+# Generic ignores
+*.log
+*.log.?
+*.log.fault
+*.db
+*.db-shm
+*.db-wal
+*.pyc
+._*
+__pycache__
+
+# Directory (contents) ignores
+/*.conf
+/.cloud
+/deps
+/.storage
+/tts
+/.vscode
+/www/fonts
+
+# Specific file ignores
+/.uuid
+/ip_bans.yaml
+/known_devices.yaml
+/secrets.yaml
+/google_service_account.json
+/FLUME_TOKEN_FILE-*
+
+# Specific keeps
+!.gitkeep
