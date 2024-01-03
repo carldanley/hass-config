@@ -21,6 +21,7 @@ __pycache__
 /tts
 /.vscode
 /www/fonts
+/backups
 
 # Specific file ignores
 /.uuid
@@ -29,6 +30,7 @@ __pycache__
 /secrets.yaml
 /google_service_account.json
 /FLUME_TOKEN_FILE-*
+/.HA_VERSION
 
 # Specific keeps
 !.gitkeep
