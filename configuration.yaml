@@ -1,0 +1,51 @@
+default_config:
+backup:
+
+http:
+  login_attempts_threshold: 3
+  use_x_forwarded_for: true
+  trusted_proxies:
+  - !env_var TRUSTED_PROXY_1
+  - !env_var TRUSTED_PROXY_2
+
+homeassistant:
+  name: Batcave
+  latitude: !env_var HOME_LATITUDE
+  longitude: !env_var HOME_LONGITUDE
+  temperature_unit: F
+  elevation: 5
+  unit_system: imperial
+  currency: USD
+  country: US
+  time_zone: America/New_York
+  allowlist_external_dirs:
+  - /tmp
+  auth_providers:
+  - type: trusted_networks
+    trusted_networks:
+    - !env_var TRUSTED_NETWORK_1
+    - !env_var TRUSTED_NETWORK_2
+    allow_bypass_login: true
+    trusted_users:
+      "192.168.4.39": !env_var TRUSTED_USER_NAME_1
+  - type: homeassistant
+  external_url: !env_var EXTERNAL_URL
+  internal_url: !env_var EXTERNAL_URL
+  media_dirs:
+    sounds: /config/www/sounds
+
+logger:
+  default: warning
+  logs:
+    homeassistant.components.template.sensor: debug
+
+recorder:
+  purge_keep_days: 1
+  auto_purge: true
+  auto_repack: true
+
+frontend:
+  themes: !include_dir_merge_named themes
+
+# tts: !include platforms/tts.yaml
+# weather: !include platforms/weather.yaml
