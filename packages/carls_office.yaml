@@ -1,5 +1,9 @@
 automation:
 
+#############################
+# LIGHT SWITCH IS AUTOMATED #
+#############################
+
 - id: 62ab2255-a7f8-4243-b53e-341d6998cba1
   alias: carls office - light switch is automated
   max_exceeded: silent
@@ -221,3 +225,58 @@ automation:
             {% endif %}
 
             {{ percent }}
+
+####################################
+# FAN & LIGHT AUTOMATICALLY TOGGLE #
+####################################
+
+- id: 4f72b9b1-3039-4bcd-b313-ae962d805365
+  alias: carls office - fan and light automatically toggle
+  trigger:
+
+  # fan light switch changed state
+  - platform: state
+    entity_id: light.office_switch
+    id: fan-light-switch-changed-state
+
+  # fan switch changed state
+  - platform: state
+    entity_id: fan.office_switch
+    id: fan-switch-changed-state
+
+  action:
+  - choose:
+
+    # fan light switch changed state
+    - conditions:
+      - condition: trigger
+        id: fan-light-switch-changed-state
+      sequence:
+      - service: light.turn_on
+        target:
+          entity_id: light.office_fan
+        data_template:
+          brightness: >-
+            {% set brightness = 0 %}
+            {% if ('brightness' in states.light.office_switch.attributes) and (states.light.office_switch.attributes.brightness != None) %}
+              {% set brightness = states.light.office_switch.attributes.brightness %}
+            {% endif %}
+
+            {{ brightness }}
+
+    # fan switch changed state
+    - conditions:
+      - condition: trigger
+        id: fan-switch-changed-state
+      sequence:
+      - service: fan.turn_on
+        target:
+          entity_id: fan.office_fan
+        data_template:
+          percentage: >-
+            {% set percentage = 0 %}
+            {% if 'percentage' in states.fan.office_switch.attributes %}
+              {% set percentage = states.fan.office_switch.attributes.percentage %}
+            {% endif %}
+
+            {{ percentage }}
