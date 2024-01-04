@@ -467,8 +467,9 @@ automation:
         state: '2'
       sequence:
       - service: media_player.volume_set
-        data:
+        target:
           entity_id: media_player.office
+        data:
           volume_level: >
             {% set stepSize = (trigger.to_state.state | float(1) ) * 0.05 %}
             {% set volume = (state_attr('media_player.office', 'volume_level') | float(10)) * 100.00 %}
