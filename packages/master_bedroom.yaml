@@ -1,0 +1,66 @@
+group:
+
+  lights_master_bedroom_ceiling:
+    name: All Master Bedroom Ceiling Lights
+    entities:
+    - light.master_bedroom_lights_switch
+    - light.master_bedroom_fan
+
+  lights_master_bedroom_nightstands:
+    name: All Master Bedroom Nightstands
+    entities:
+    - light.carl_nightstand
+    - light.kristine_nightstand
+
+automation:
+
+#############################
+# LIGHT SWITCH IS AUTOMATED #
+#############################
+
+- id: 35e53888-8428-4b2c-a278-a604065b5e87
+  alias: master bedroom - light switch is automated
+  trigger:
+
+  # two taps up
+  - platform: event
+    event_type: zwave_js_value_notification
+    event_data:
+      node_id: 97
+      property_name: scene
+      property_key_name: '002'
+      value: KeyPressed2x
+    id: two-taps-up
+
+  # two taps down
+  - platform: event
+    event_type: zwave_js_value_notification
+    event_data:
+      node_id: 97
+      property_name: scene
+      property_key_name: '001'
+      value: KeyPressed2x
+    id: two-taps-down
+
+  action:
+  - choose:
+
+    # two taps up
+    - conditions:
+      - condition: trigger
+        id: two-taps-up
+      sequence:
+      - service: fan.turn_on
+        target:
+          entity_id: fan.master_bedroom_fan
+        data:
+          percentage: 100
+
+    # two taps down
+    - conditions:
+      - condition: trigger
+        id: two-taps-down
+      sequence:
+      - service: fan.turn_off
+        target:
+          entity_id: fan.master_bedroom_fan

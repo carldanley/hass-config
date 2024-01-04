@@ -1,0 +1,94 @@
+group:
+
+  lights_master_bathroom_vanity:
+    name: All Master Bathroom Vanity Lights
+    entities:
+    - light.master_bathroom_vanity_switch
+
+automation:
+
+######################################
+# VANITY LIGHTS AUTOMATICALLY TOGGLE #
+######################################
+
+- id: 65d5b49b-438f-4749-acbb-4766fe0e967a
+  alias: master bathroom - vanity lights automatically toggle
+  trigger:
+
+  # motion detected
+  - platform: state
+    entity_id: binary_sensor.master_bathroom_motion_sensor_occupancy
+    to: 'on'
+    id: motion-detected
+
+  # no more motion
+  - platform: state
+    entity_id: binary_sensor.master_bathroom_motion_sensor_occupancy
+    to: 'off'
+    for:
+      minutes: 2
+    id: no-more-motion
+
+  # turns-on
+  - platform: state
+    entity_id: light.master_bathroom_vanity_switch
+    to: 'on'
+    id: turns-on
+
+  action:
+  - choose:
+
+    # motion detected
+    - conditions:
+      - condition: trigger
+        id: motion-detected
+      - condition: or
+        conditions:
+        - condition: sun
+          after: sunset
+          after_offset: '-00:15:00'
+        - condition: sun
+          before: sunrise
+          before_offset: '00:15:00'
+      sequence:
+      - service: light.turn_on
+        target:
+          entity_id: light.master_bathroom_vanity_switch
+        data:
+          brightness_pct: 50
+
+    # no more motion
+    - conditions:
+      - condition: trigger
+        id: no-more-motion
+      - condition: or
+        conditions:
+        - condition: sun
+          after: sunset
+          after_offset: '-00:15:00'
+        - condition: sun
+          before: sunrise
+          before_offset: '00:15:00'
+      sequence:
+      - service: light.turn_off
+        target:
+          entity_id: light.master_bathroom_vanity_switch
+
+    # turns on
+    - conditions:
+      - condition: trigger
+        id: turns-on
+      - condition: and
+        conditions:
+        - condition: sun
+          after: sunrise
+          after_offset: '00:15:00'
+        - condition: sun
+          before: sunset
+          before_offset: '-00:15:00'
+      sequence:
+      - service: light.turn_on
+        target:
+          entity_id: light.master_bathroom_vanity_switch
+        data:
+          brightness_pct: 100

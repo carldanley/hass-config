@@ -1,0 +1,243 @@
+group:
+
+  lights_patio:
+    name: Patio Lights
+    entities:
+    - light.patio_lights_switch
+    - light.patio_fan
+
+automation:
+
+#############################
+# LIGHT SWITCH IS AUTOMATED #
+#############################
+
+- id: d17369bf-c19f-4933-8123-cb1d50d25266
+  alias: patio - light switch is automated
+  trigger:
+
+  # one tap up
+  - platform: event
+    event_type: zwave_js_value_notification
+    event_data:
+      node_id: 93
+      property_name: scene
+      property_key_name: '002'
+      value: KeyPressed
+    id: one-tap-up
+
+  # one tap down
+  - platform: event
+    event_type: zwave_js_value_notification
+    event_data:
+      node_id: 93
+      property_name: scene
+      property_key_name: '001'
+      value: KeyPressed
+    id: one-tap-down
+
+  # two taps up
+  - platform: event
+    event_type: zwave_js_value_notification
+    event_data:
+      node_id: 93
+      property_name: scene
+      property_key_name: '002'
+      value: KeyPressed2x
+    id: two-taps-up
+
+  # two taps down
+  - platform: event
+    event_type: zwave_js_value_notification
+    event_data:
+      node_id: 93
+      property_name: scene
+      property_key_name: '001'
+      value: KeyPressed2x
+    id: two-taps-down
+
+  # three taps up
+  - platform: event
+    event_type: zwave_js_value_notification
+    event_data:
+      node_id: 93
+      property_name: scene
+      property_key_name: '002'
+      value: KeyPressed3x
+    id: three-taps-up
+
+  # three taps down
+  - platform: event
+    event_type: zwave_js_value_notification
+    event_data:
+      node_id: 93
+      property_name: scene
+      property_key_name: '001'
+      value: KeyPressed3x
+    id: three-taps-down
+
+  # four taps up
+  - platform: event
+    event_type: zwave_js_value_notification
+    event_data:
+      node_id: 93
+      property_name: scene
+      property_key_name: '002'
+      value: KeyPressed4x
+    id: four-taps-up
+
+  # four taps down
+  - platform: event
+    event_type: zwave_js_value_notification
+    event_data:
+      node_id: 93
+      property_name: scene
+      property_key_name: '001'
+      value: KeyPressed4x
+    id: four-taps-down
+
+  action:
+  - choose:
+
+    # one tap up
+    - conditions:
+      - condition: trigger
+        id: one-tap-up
+      sequence:
+      - service: light.turn_on
+        target:
+          entity_id: light.patio_fan
+        data:
+          brightness_pct: 100
+
+    # one tap down
+    - conditions:
+      - condition: trigger
+        id: one-tap-down
+      sequence:
+      - service: light.turn_off
+        target:
+          entity_id: light.patio_fan
+
+    # two taps up
+    - conditions:
+      - condition: trigger
+        id: two-taps-up
+      sequence:
+      - service: fan.turn_on
+        target:
+          entity_id: fan.patio_fan
+        data:
+          percentage: 100
+
+    # two taps down
+    - conditions:
+      - condition: trigger
+        id: two-taps-down
+      sequence:
+      - service: fan.turn_off
+        target:
+          entity_id: fan.patio_fan
+
+    # three taps up
+    - conditions:
+      - condition: trigger
+        id: three-taps-up
+      sequence:
+      - service: light.turn_on
+        target:
+          entity_id: light.patio_lights_switch
+        data:
+          brightness_pct: 100
+
+    # three taps down
+    - conditions:
+      - condition: trigger
+        id: three-taps-down
+      sequence:
+      - service: light.turn_off
+        target:
+          entity_id: light.patio_lights_switch
+
+    # four taps up
+    - conditions:
+      - condition: trigger
+        id: four-taps-up
+      sequence:
+      - parallel:
+        - service: light.turn_on
+          target:
+            entity_id: light.iaqualink_pool_lights
+          data:
+            effect: Alpine White
+
+        - service: light.turn_on
+          target:
+            entity_id: light.iaqualink_spa_lights
+          data:
+            effect: Alpine White
+
+    # four taps down
+    - conditions:
+      - condition: trigger
+        id: four-taps-down
+      sequence:
+      - parallel:
+      - service: light.turn_off
+        target:
+          entity_id: light.iaqualink_pool_lights
+
+      - service: light.turn_off
+        target:
+          entity_id: light.iaqualink_spa_lights
+
+#####################################
+# LIGHT SWITCH LIGHTS ARE AUTOMATED #
+#####################################
+
+- id: 50138131-e5e1-483b-83f3-19e6325e11a6
+  alias: patio - light switch lights are automated
+  trigger:
+
+  # lights turn on
+  - platform: state
+    entity_id: group.lights_patio
+    to: 'on'
+    id: lights-turn-on
+
+  # lights turn off
+  - platform: state
+    entity_id: group.lights_patio
+    to: 'off'
+    id: lights-turn-off
+
+  action:
+  - choose:
+
+    # lights turn on
+    - conditions:
+      - condition: trigger
+        id: lights-turn-on
+      sequence:
+      - service: script.inovelli_switch_set_brightness_when_switch_on
+        data:
+          entity_id: light.patio_lights_switch
+          level: 10
+      - service: script.inovelli_switch_set_brightness_when_switch_off
+        data:
+          entity_id: light.patio_lights_switch
+          level: 10
+
+    # lights turn off
+    - conditions:
+      - condition: trigger
+        id: lights-turn-off
+      sequence:
+      - service: script.inovelli_switch_set_brightness_when_switch_on
+        data:
+          entity_id: light.patio_lights_switch
+          level: 2
+      - service: script.inovelli_switch_set_brightness_when_switch_off
+        data:
+          entity_id: light.patio_lights_switch
+          level: 2

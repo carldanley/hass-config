@@ -1,0 +1,48 @@
+automation:
+
+##################################
+# DOORBELL PRESS TRIGGERS ALERTS #
+##################################
+
+- id: 81aa7374-8abb-48e2-adc4-b0efecaca7f5
+  alias: porch - doorbell press triggers alerts
+  trigger:
+  - platform: state
+    entity_id: binary_sensor.front_doorbell_doorbell
+    to: "on"
+
+  action:
+  - parallel:
+    - service: script.sonos_cloud_play_local_sound
+      data_template:
+        speakers: >-
+          {% set speakers = "'media_player.great_room_cloud'" %}
+          {% set speakers = speakers + ", 'media_player.office_cloud'" %}
+          {% set speakers = speakers + ", 'media_player.roam_cloud'" %}
+          {% set speakers = speakers + ", 'media_player.patio_cloud'" %}
+          {% set speakers = speakers + ", 'media_player.garage_cloud'" %}
+          {% set speakers = speakers + ", 'media_player.master_bedroom_cloud'" %}
+
+          {% set speakers = '[' + speakers + ']' %}
+          {{ speakers }}
+        file: doorbell.mp3
+        volume: 80
+
+    - service: script.sonos_cloud_play_local_sound
+      data_template:
+        speakers:
+        - media_player.porch_cloud
+        file: front-doorbell-welcome-no-soliciting.mp3
+        volume: 100
+
+    - service: notify.critical_notification_audience
+      data:
+        title: "🔔 Doorbell Pressed 🔔"
+        message: "Somebody is at the front door."
+        data:
+          attachment:
+            content-type: jpeg
+          push:
+            category: camera
+          entity_id: camera.front_doorbell_medium
+

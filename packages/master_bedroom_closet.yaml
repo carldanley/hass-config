@@ -1,0 +1,52 @@
+group:
+
+  lights_master_closet:
+    name: All Master Closet Lights
+    entities:
+    - switch.master_closet_switch
+
+automation:
+
+#######################################
+# CEILING LIGHTS AUTOMATICALLY TOGGLE #
+#######################################
+
+- id: 08702ace-89ca-468d-9afe-6dc023617d3b
+  alias: master closet - ceiling lights automatically toggle
+  trigger:
+
+  # motion detected
+  - platform: state
+    entity_id: binary_sensor.master_closet_motion_sensor_occupancy
+    to: 'on'
+    id: motion-detected
+
+  # no more motion
+  - platform: state
+    entity_id: binary_sensor.master_closet_motion_sensor_occupancy
+    to: 'off'
+    for:
+      minutes: 5
+    id: no-more-motion
+
+  action:
+  - choose:
+
+    # motion detected
+    - conditions:
+      - condition: trigger
+        id: motion-detected
+      sequence:
+      - service: switch.turn_on
+        target:
+          entity_id: switch.master_closet_switch
+
+    # no more motion
+    - conditions:
+      - condition: trigger
+        id: no-more-motion
+      sequence:
+      - service: switch.turn_off
+        target:
+          entity_id: switch.master_closet_switch
+
