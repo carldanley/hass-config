@@ -439,9 +439,8 @@ automation:
     id: tap
 
   # action-angle
-  - platform: mqtt
-    topic: "zigbee2mqtt/Carls Office Cube"
-    value_template: "{{ (value_json.action_angle > 0) or (value_json.action_angle < 0) }}"
+  - platform: state
+    entity_id: sensor.carls_office_cube_action_angle
     id: action-angle
 
   action:
