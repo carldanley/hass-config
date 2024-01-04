@@ -1,0 +1,116 @@
+group:
+
+  lights_dinette_chandelier:
+    name: Dinette Chandelier Lights
+    entities:
+    - light.dinette_chandelier_1
+    - light.dinette_chandelier_2
+    - light.dinette_chandelier_3
+
+homeassistant:
+  customize:
+
+    light.dinette_chandelier_1:
+      friendly_name: Dinette Chandelier Light 1
+
+    light.dinette_chandelier_2:
+      friendly_name: Dinette Chandelier Light 2
+
+    light.dinette_chandelier_3:
+      friendly_name: Dinette Chandelier Light 3
+
+automation:
+
+########################################
+# CHANDELIER LIGHT SWITCH IS AUTOMATED #
+########################################
+
+- id: 9e7df33e-b319-4a49-a753-fbf8aead9279
+  alias: dining room - chandelier light switch is automated
+  trigger:
+
+  # one tap up
+  - platform: event
+    event_type: zwave_js_value_notification
+    event_data:
+      node_id: 88
+      property_name: scene
+      property_key_name: '002'
+      value: KeyPressed
+    id: one-tap-up
+
+  # one tap down
+  - platform: event
+    event_type: zwave_js_value_notification
+    event_data:
+      node_id: 88
+      property_name: scene
+      property_key_name: '001'
+      value: KeyPressed
+    id: one-tap-down
+
+  action:
+  - choose:
+
+    # one tap up
+    - conditions:
+      - condition: trigger
+        id: one-tap-up
+      sequence:
+      - service: light.turn_on
+        target:
+          entity_id: group.lights_dinette_chandelier
+        data:
+          brightness_pct: 100
+
+    # one tap down
+    - conditions:
+      - condition: trigger
+        id: one-tap-down
+      sequence:
+      - service: light.turn_off
+        target:
+          entity_id: group.lights_dinette_chandelier
+
+################################################
+# CHANDELIER LIGHT SWITCH LIGHTS ARE AUTOMATED #
+################################################
+
+- id: d4acf2b6-7b3b-408f-9171-9261f2392d56
+  alias: dining room - chandelier light switch lights are automated
+  trigger:
+
+  # turns on
+  - platform: state
+    entity_id: group.lights_dinette_chandelier
+    to: 'on'
+    id: turns-on
+
+  # turns off
+  - platform: state
+    entity_id: group.lights_dinette_chandelier
+    to: 'off'
+    id: turns-off
+
+  action:
+  - choose:
+
+    # turns on
+    - conditions:
+      - condition: trigger
+        id: turns-on
+      sequence:
+      - service: script.inovelli_switch_set_brightness_when_switch_on
+        data:
+          entity_id: light.dinette_chandelier_switch
+          level: 10
+
+    # turns off
+    - conditions:
+      - condition: trigger
+        id: turns-off
+      sequence:
+      - service: script.inovelli_switch_set_brightness_when_switch_on
+        data:
+          entity_id: light.dinette_chandelier_switch
+          level: 2

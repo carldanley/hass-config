@@ -40,6 +40,10 @@ homeassistant:
 
 script:
 
+  ####################
+  # PLAY LOCAL SOUND #
+  ####################
+
   sonos_cloud_play_local_sound:
     alias: Sonos Cloud Play Local Sound
     sequence:
