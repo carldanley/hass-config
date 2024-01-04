@@ -1,0 +1,116 @@
+automation:
+
+#########################################
+# SEND MAINTENANCE REMINDERS FOR FILTER #
+#########################################
+
+- id: aadc04ca-2d83-4071-9252-a14edb6a76ec
+  alias: air conditioning - send maintenance reminders
+  trigger:
+
+  # noon
+  - platform: time
+    at: "12:00:00"
+    id: noon
+
+  action:
+  - choose:
+
+    # noon on 1st of month
+    - conditions:
+      - condition: trigger
+        id: noon
+      - condition: template
+        value_template: "{{ now().strftime('%d') == '01' }}"
+      sequence:
+      - service: notify.critical_notification_audience
+        data:
+          title: "🏠 Change AC Filter 🏠"
+          message: "It's time to change the air conditioning filter."
+
+###########################
+# THERMOSTAT IS AUTOMATED #
+###########################
+
+- id: bf3d13e3-2dcf-47e2-b790-de10eeadb74a
+  alias: air conditioning - thermostat is automated
+  trigger:
+
+  # 12AM
+  - platform: time
+    at: '00:00:00'
+    id: 12AM
+
+  # 6AM
+  - platform: time
+    at: '06:00:00'
+    id: 6AM
+
+  # 9AM
+  - platform: time
+    at: '09:00:00'
+    id: 9AM
+
+  # 3PM
+  - platform: time
+    at: '15:00:00'
+    id: 3PM
+
+  action:
+  - choose:
+
+    # 12AM
+    - conditions:
+      - condition: trigger
+        id: 12AM
+      sequence:
+      - service: climate.set_temperature
+        target:
+          entity_id: climate.house_thermostat
+        data:
+          hvac_mode: cool
+          temperature: 75
+          target_temp_high: 76
+          target_temp_low: 74
+
+    # 6AM
+    - conditions:
+      - condition: trigger
+        id: 6AM
+      sequence:
+      - service: climate.set_temperature
+        target:
+          entity_id: climate.house_thermostat
+        data:
+          hvac_mode: cool
+          temperature: 76
+          target_temp_high: 77
+          target_temp_low: 75
+
+    # 9AM
+    - conditions:
+      - condition: trigger
+        id: 9AM
+      sequence:
+      - service: climate.set_temperature
+        target:
+          entity_id: climate.house_thermostat
+        data:
+          hvac_mode: cool
+          temperature: 76
+          target_temp_high: 77
+          target_temp_low: 75
+
+    # 3PM
+    - conditions:
+      - condition: trigger
+        id: 3PM
+      sequence:
+      - service: climate.set_temperature
+        target:
+          entity_id: climate.house_thermostat
+        data:
+          hvac_mode: cool
+          temperature: 76
+          target_temp_high: 77
+          target_temp_low: 75

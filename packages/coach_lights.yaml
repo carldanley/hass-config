@@ -1,0 +1,121 @@
+group:
+
+  lights_coach_lights:
+    name: Coach Lights
+    entities:
+    - light.left_coach_light_1
+    - light.left_coach_light_2
+    - light.right_coach_light_1
+    - light.right_coach_light_2
+
+homeassistant:
+  customize:
+
+    light.left_coach_light_1:
+      friendly_name: Left Coach Light 1
+
+    light.left_coach_light_2:
+      friendly_name: Left Coach Light 2
+
+    light.right_coach_light_1:
+      friendly_name: Right Coach Light 1
+
+    light.right_coach_light_2:
+      friendly_name: Right Coach Light 2
+
+automation:
+
+#######################
+# SWITCH IS AUTOMATED #
+#######################
+
+- id: a4c2d3d9-9f8e-4034-95c4-d29fcff94bfc
+  alias: coach lights - switch is automated
+  trigger:
+
+  # one tap up
+  - platform: event
+    event_type: zwave_js_value_notification
+    event_data:
+      node_id: 86
+      property_name: scene
+      property_key_name: '002'
+      value: KeyPressed
+    id: one-tap-up
+
+  # one tap down
+  - platform: event
+    event_type: zwave_js_value_notification
+    event_data:
+      node_id: 86
+      property_name: scene
+      property_key_name: '001'
+      value: KeyPressed
+    id: one-tap-down
+
+  action:
+  - choose:
+
+    # one tap up
+    - conditions:
+      - condition: trigger
+        id: one-tap-up
+      sequence:
+      - service: light.turn_on
+        data:
+          transition: 0
+        target:
+          entity_id: group.lights_coach_lights
+
+    # one tap down
+    - conditions:
+      - condition: trigger
+        id: one-tap-down
+      sequence:
+      - service: light.turn_off
+        data:
+          transition: 0
+        target:
+          entity_id: group.lights_coach_lights
+
+#############################
+# SWITCH LIGHT IS AUTOMATED #
+#############################
+
+- id: 9091d1bf-5807-4a93-adec-5e23918a17c3
+  alias: coach lights - switch light is automated
+  trigger:
+
+  # coach lights state changes
+  - platform: state
+    entity_id: group.lights_coach_lights
+    id: coach-lights-state-changes
+
+  action:
+  - choose:
+
+    # coach lights state changes (on)
+    - conditions:
+      - condition: trigger
+        id: coach-lights-state-changes
+      - condition: state
+        entity_id: group.lights_coach_lights
+        state: 'on'
+      sequence:
+      - service: script.inovelli_switch_set_brightness_when_switch_on
+        data:
+          entity_id: light.coach_lights_switch
+          level: 10
+
+    # coach lights state changes (off)
+    - conditions:
+      - condition: trigger
+        id: coach-lights-state-changes
+      - condition: state
+        entity_id: group.lights_coach_lights
+        state: 'off'
+      sequence:
+      - service: script.inovelli_switch_set_brightness_when_switch_on
+        data:
+          entity_id: light.coach_lights_switch
+          level: 2

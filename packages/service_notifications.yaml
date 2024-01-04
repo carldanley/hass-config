@@ -1,0 +1,62 @@
+notify:
+
+##################################
+# CRITICAL NOTIFICATION AUDIENCE #
+##################################
+
+- platform: group
+  name: critical_notification_audience
+  services:
+  - service: mobile_app_carls_iphone
+
+##############################
+# INFO NOTIFICATION AUDIENCE #
+##############################
+
+- platform: group
+  name: info_notification_audience
+  services:
+  - service: mobile_app_carls_iphone
+
+script:
+
+  ##########################################
+  # SEND CRITICAL NOTIFICATION BY PRESENCE #
+  ##########################################
+
+  send_critical_notification_by_presence:
+    alias: Send Critical Notification by Presence
+    sequence:
+    - choose:
+
+      # nobody is home
+      - conditions:
+        - condition: state
+          entity_id: person.carl
+          state: not_home
+        - condition: state
+          entity_id: person.kristine
+          state: not_home
+        sequence:
+        - service: notify.critical_notification_audience
+          data:
+            title: "{{ push_title }}"
+            message: "{{ push_message }}"
+
+      # somebody is at home
+      - conditions:
+        - condition: or
+          conditions:
+          - condition: state
+            entity_id: person.carl
+            state: home
+          - condition: state
+            entity_id: person.kristine
+            state: home
+        sequence:
+        - service: script.sonos_cloud_play_local_sound
+          data:
+            speakers: "{{ sound_speakers }}"
+            file: "{{ sound_file }}"
+            volume: "{{ sound_volume | default(1) }}"
+            bonded: "{{ bonded | default(false) }}"

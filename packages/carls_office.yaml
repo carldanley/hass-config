@@ -430,6 +430,7 @@ automation:
 
 - id: 9af3c747-c0d6-4f08-8f46-215661c0db18
   alias: carls office - cube controls sonos
+  max_exceeded: silent
   trigger:
 
   # tap
