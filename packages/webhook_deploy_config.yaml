@@ -1,5 +1,5 @@
 shell_command:
-  deploy_config: cd /config && git reset --hard origin/main
+  deploy_config: cd /config && git pull || git reset origin/main && git reset origin/main --hard
 
 automation:
 - id: d3dc1b3a-cee9-47e3-9770-f54760038dd9
