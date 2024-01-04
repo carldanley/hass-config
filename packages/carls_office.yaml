@@ -470,7 +470,7 @@ automation:
         data:
           entity_id: media_player.office
           volume_level: >
-            {% set stepSize = (trigger.to_state.state | float ) * 0.05 %}
+            {% set stepSize = (trigger.to_state.state | float(1) ) * 0.05 %}
             {% set volume = (state_attr('media_player.office', 'volume_level') | float(10)) * 100.00 %}
             {% set newVolume = (volume | int(10)) + stepSize %}
 
@@ -479,5 +479,5 @@ automation:
             {% elif newVolume >= 100 %}
               1.00
             {% else %}
-              {{ newVolume / 100}}
+              {{ newVolume / 100 }}
             {% endif %}
