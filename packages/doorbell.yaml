@@ -21,7 +21,6 @@ automation:
           {% set speakers = speakers + ", 'media_player.roam_cloud'" %}
           {% set speakers = speakers + ", 'media_player.patio_cloud'" %}
           {% set speakers = speakers + ", 'media_player.garage_cloud'" %}
-          {% set speakers = speakers + ", 'media_player.master_bedroom_cloud'" %}
 
           {% set speakers = '[' + speakers + ']' %}
           {{ speakers }}
