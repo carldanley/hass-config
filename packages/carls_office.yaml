@@ -423,3 +423,61 @@ automation:
                 {{ percent }}
               {% endif %}
             {% endif %}
+
+#######################
+# CUBE CONTROLS SONOS #
+#######################
+
+- id: 9af3c747-c0d6-4f08-8f46-215661c0db18
+  alias: carls office - cube controls sonos
+  trigger:
+
+  # tap
+  - platform: state
+    entity_id: sensor.carls_office_cube_action
+    to: tap
+    id: tap
+
+  # action-angle
+  - platform: state
+    entity_id: sensor.carls_office_cube_action_angle
+    id: action-angle
+
+  action:
+  - choose:
+
+    # tap toggles sonos
+    - conditions:
+      - condition: trigger
+        id: tap
+      - condition: state
+        entity_id: sensor.carls_office_cube_side
+        state: '2'
+      sequence:
+      - service: media_player.media_play_pause
+        target:
+          entity_id: media_player.office
+
+    # action-angle
+    - conditions:
+      - condition: trigger
+        id: action-angle
+      - condition: state
+        entity_id: sensor.carls_office_cube_side
+        state: '2'
+      sequence:
+      - service: media_player.volume_set
+        data:
+          entity_id: media_player.office
+          volume_level: >
+            {% set stepSize = (trigger.to_state.state | float ) * 0.05 %}
+            {% set volume = (state_attr('media_player.office', 'volume_level') | float(10)) * 100.00 %}
+            {% set newVolume = (volume | int(10)) + stepSize %}
+
+            {% if newVolume <= 0.00 %}
+              0.00
+            {% elif newVolume >= 100 %}
+              1.00
+            {% else %}
+              {{ newVolume / 100}}
+            {% endif %}

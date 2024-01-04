@@ -1,0 +1,5 @@
+- platform: template
+  sensors:
+
+    external_url:
+      value_template: !env_var EXTERNAL_URL

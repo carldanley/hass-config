@@ -1,0 +1,55 @@
+sonos:
+  media_player:
+    advertise_addr: 192.168.12.15
+    hosts:
+    - 192.168.4.189 # garage
+    - 192.168.4.236 # great room - sub
+    - 192.168.4.178 # great room - arc
+    - 192.168.4.190 # great room - right
+    - 192.168.4.129 # great room - left
+    - 192.168.4.142 # master bedroom
+    - 192.168.4.105 # patio - left
+    - 192.168.4.237 # patio - right
+    - 192.168.4.99  # patio - projector
+    - 192.168.4.228 # porch
+    - 192.168.4.30  # roam
+    - 192.168.4.245 # office
+
+homeassistant:
+  customize:
+    media_player.garage_cloud:
+      friendly_name: Garage Cloud
+
+    media_player.great_room_cloud:
+      friendly_name: Great Room Cloud
+
+    media_player.master_bedroom_cloud:
+      friendly_name: Master Bedroom Cloud
+
+    media_player.office_cloud:
+      friendly_name: Office Cloud
+
+    media_player.patio_cloud:
+      friendly_name: Patio Cloud
+
+    media_player.patio_projector_cloud:
+      friendly_name: Patio Projector Cloud
+
+    media_player.porch_cloud:
+      friendly_name: Porch Cloud
+
+script:
+
+  sonos_cloud_play_local_sound:
+    alias: Sonos Cloud Play Local Sound
+    sequence:
+
+    - service: media_player.play_media
+      target:
+        entity_id: "{{ speakers | default('media_player.great_room_cloud') | list | join(', ') }}"
+      data:
+        media_content_id: "{{ states('sensor.external_url') }}/local/sounds/{{ file }}"
+        media_content_type: "music"
+        extra:
+          volume: "{{ volume | default(1) }}"
+          play_on_bonded: "{{ bonded | default(false) }}"
