@@ -5,8 +5,13 @@ name: default
 steps:
 - name: deploy-config
   image: alpine
+  environment:
+    DOMAIN:
+      from_secret: domain
+    WEBHOOK_ID:
+      from_secret: webhook-id
   commands:
-  - curl -X POST ${domain}/api/webhook/${webhook-id}
+  - curl -X POST $DOMAIN/api/webhook/$WEBHOOK_ID
   when:
     branch:
     - main
