@@ -14,4 +14,4 @@ steps:
   - curl -X POST $DOMAIN/api/webhook/$WEBHOOK_ID
   when:
     branch:
-    - main
+    - master
