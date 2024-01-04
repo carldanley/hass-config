@@ -1,0 +1,50 @@
+sensor:
+
+- platform: template
+  sensors:
+
+    days_until_trash_pickup:
+      friendly_name: Days Until Trash Pickup
+      unit_of_measurement: days
+      icon_template: fas:trash-alt
+      value_template: >-
+        {% set time = states('sensor.date_time_iso') %}
+        {% set weekday = now().weekday() + 1 %}
+
+        {% if weekday <= 3 %}
+          {{ 3 - weekday }}
+        {% elif weekday <= 6 %}
+          {{ 6 - weekday }}
+        {% else %}
+          3
+        {% endif %}
+
+    days_until_recycling_pickup:
+      friendly_name: Days Until Recycling Pickup
+      unit_of_measurement: days
+      icon_template: fas:recycle
+      value_template: >-
+        {% set time = states('sensor.date_time_iso') %}
+        {% set weekday = now().weekday() + 1 %}
+
+        {% if weekday <= 3 %}
+          {{ 3 - weekday }}
+        {% elif weekday <= 6 %}
+          {{ 6 - weekday }}
+        {% else %}
+          3
+        {% endif %}
+
+    days_until_bulk_pickup:
+      friendly_name: Days Until Bulk Pickup
+      unit_of_measurement: days
+      icon_template: fas:dumpster
+      value_template: >-
+        {% set time = states('sensor.date_time_iso') %}
+        {% set weekday = now().weekday() + 1 %}
+
+        {% if weekday <= 6 %}
+          {{ 6 - weekday }}
+        {% else %}
+          {{ (7 - weekday) + 6 }}
+        {% endif %}

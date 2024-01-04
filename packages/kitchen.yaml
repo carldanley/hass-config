@@ -1,0 +1,219 @@
+group:
+
+  lights_kitchen_pendants:
+    name: Kitchen Pendant Lights
+    entities:
+    - light.kitchen_pendant_left
+    - light.kitchen_pendant_middle
+    - light.kitchen_pendant_right
+
+  lights_kitchen:
+    name: Kitchen Lights
+    entities:
+    - light.kitchen_pendant_left
+    - light.kitchen_pendant_middle
+    - light.kitchen_pendant_right
+    - light.kitchen_lights_switch
+    - light.kitchen_accent_1
+    - light.kitchen_accent_2
+
+  lights_kitchen_ceiling:
+    name: Kitchen Ceiling Lights
+    entities:
+    - light.kitchen_lights_switch
+
+input_datetime:
+
+  kitchen_accent_lights_off_time:
+    name: Kitchen Accents Off Time
+    has_date: false
+    has_time: true
+    initial: '23:00'
+
+automation:
+
+#####################################
+# ALL LIGHTS AUTOMATICALLY TURN OFF #
+#####################################
+
+- id: c3347903-c68b-4fae-bd74-5b5197c23672
+  alias: kitchen - all lights automatically turn off
+  trigger:
+  - platform: sun
+    event: sunrise
+    offset: '00:30:00'
+
+  action:
+  - service: light.turn_off
+    target:
+      entity_id: group.lights_kitchen
+
+##########################################
+# HUE ACCENT LIGHTS AUTOMATICALLY TOGGLE #
+##########################################
+
+- id: e7a7ff40-94a3-489c-93e9-826c3b5a3096
+  alias: kitchen - hue accent lights automatically toggle
+  trigger:
+
+  # sunset
+  - platform: sun
+    event: sunset
+    id: sunset
+
+  # auto off time
+  - platform: time
+    at: input_datetime.kitchen_accent_lights_off_time
+    id: auto-off-time
+
+  # person-motion
+  - platform: state
+    entity_id: binary_sensor.kitchen_person_occupancy
+    to: 'on'
+    id: person-motion
+
+  # no person motion
+  - platform: state
+    entity_id: binary_sensor.kitchen_person_occupancy
+    to: 'off'
+    for:
+      minutes: 1
+    id: no-person-motion
+
+  action:
+  - choose:
+
+    # sunset
+    - conditions:
+      - condition: trigger
+        id: sunset
+      sequence:
+      - service: light.turn_on
+        target:
+          entity_id: group.lights_kitchen_accents
+
+    # auto off time
+    - conditions:
+      - condition: trigger
+        id: auto-off-time
+      sequence:
+      - service: light.turn_off
+        target:
+          entity_id: group.lights_kitchen_accents
+
+    # person motion
+    - conditions:
+      - condition: trigger
+        id: person-motion
+      - condition: or
+        conditions:
+        - condition: time
+          after: input_datetime.kitchen_accent_lights_off_time
+        - condition: sun
+          before: sunrise
+      sequence:
+      - service: light.turn_on
+        target:
+          entity_id: group.lights_kitchen_accents
+        data:
+          rgb_color: [255, 255, 255]
+          brightness_pct: 100
+
+    # no person motion
+    - conditions:
+      - condition: trigger
+        id: no-person-motion
+      - condition: state
+        entity_id: binary_sensor.kitchen_person_occupancy
+        state: "off"
+      - condition: or
+        conditions:
+        - condition: time
+          after: input_datetime.kitchen_accent_lights_off_time
+        - condition: sun
+          before: sunrise
+      sequence:
+      - service: light.turn_off
+        target:
+          entity_id: group.lights_kitchen_accents
+
+######################################
+# PENDANT LIGHTS SWITCH IS AUTOMATED #
+######################################
+
+- id: 403924ca-5aff-484b-a598-bb8da4657fd8
+  alias: kitchen - pendant lights switch is automated
+  trigger:
+
+  # one tap up
+  - platform: event
+    event_type: zwave_js_value_notification
+    event_data:
+      node_id: 83
+      property_name: scene
+      property_key_name: '002'
+      value: KeyPressed
+    id: one-tap-up
+
+  # one tap down
+  - platform: event
+    event_type: zwave_js_value_notification
+    event_data:
+      node_id: 83
+      property_name: scene
+      property_key_name: '001'
+      value: KeyPressed
+    id: one-tap-down
+
+  # kitchen pendants turn on
+  - platform: state
+    entity_id: group.lights_kitchen_pendants
+    to: 'on'
+    id: kitchen-pendants-turn-on
+
+  # kitchen pendants turn off
+  - platform: state
+    entity_id: group.lights_kitchen_pendants
+    to: 'off'
+    id: kitchen-pendants-turn-off
+
+  action:
+  - choose:
+
+    # one tap up
+    - conditions:
+      - condition: trigger
+        id: one-tap-up
+      sequence:
+      - service: light.turn_on
+        target:
+          entity_id: group.lights_hallway_pendants
+
+    # one tap down
+    - conditions:
+      - condition: trigger
+        id: one-tap-down
+      sequence:
+      - service: light.turn_off
+        target:
+          entity_id: group.lights_hallway_pendants
+
+    # kitchen pendants turn on
+    - conditions:
+      - condition: trigger
+        id: kitchen-pendants-turn-on
+      sequence:
+      - service: script.inovelli_switch_set_brightness_when_switch_on
+        data:
+          entity_id: light.hallway_pendant_lights_switch
+          level: 10
+
+    # kitchen pendants turn off
+    - conditions:
+      - condition: trigger
+        id: kitchen-pendants-turn-off
+      sequence:
+      - service: script.inovelli_switch_set_brightness_when_switch_on
+        data:
+          entity_id: light.hallway_pendant_lights_switch
+          level: 2

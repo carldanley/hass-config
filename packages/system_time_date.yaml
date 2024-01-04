@@ -1,0 +1,27 @@
+sensor:
+
+- platform: time_date
+  display_options:
+  - time
+  - date
+  - date_time
+  - date_time_utc
+  - date_time_iso
+  - time_date
+  - time_utc
+  - beat
+
+binary_sensor:
+
+- platform: template
+  sensors:
+
+    season_is_summer:
+      icon_template: mdi:white-balance-sunny
+      value_template: >-
+        {% set month = (now().strftime('%m') | int) %}
+        {% if (month >= 5) and (month <= 9) %}
+          on
+        {% else %}
+          off
+        {% endif %}
