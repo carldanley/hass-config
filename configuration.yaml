@@ -39,6 +39,7 @@ logger:
   default: warning
   logs:
     homeassistant.components.template.sensor: debug
+    homeassistant.components.shell_command: debug
 
 recorder:
   purge_keep_days: 1
