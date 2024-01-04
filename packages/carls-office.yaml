@@ -1,0 +1,221 @@
+- id: 62ab2255-a7f8-4243-b53e-341d6998cba1
+  alias: office - light switch is automated
+  max_exceeded: silent
+  trigger:
+
+  # main light button pressed
+  - platform: event
+    event_type: zwave_js_value_notification
+    event_data:
+      node_id: 94
+      property_name: scene
+      property_key_name: '002'
+      value: KeyPressed
+    id: main-light-button-pressed
+
+  # side light button top tapped once
+  - platform: event
+    event_type: zwave_js_value_notification
+    event_data:
+      node_id: 94
+      property_name: scene
+      property_key_name: '003'
+      value: KeyPressed
+    id: side-light-button-top-tapped-once
+
+  # side light button bottom tapped once
+  - platform: event
+    event_type: zwave_js_value_notification
+    event_data:
+      node_id: 94
+      property_name: scene
+      property_key_name: '004'
+      value: KeyPressed
+    id: side-light-button-bottom-tapped-once
+
+  # main fan button pressed
+  - platform: event
+    event_type: zwave_js_value_notification
+    event_data:
+      node_id: 94
+      property_name: scene
+      property_key_name: '001'
+      value: KeyPressed
+    id: main-fan-button-pressed
+
+  # side fan button top tapped once
+  - platform: event
+    event_type: zwave_js_value_notification
+    event_data:
+      node_id: 94
+      property_name: scene
+      property_key_name: '005'
+      value: KeyPressed
+    id: side-fan-button-top-tapped-once
+
+  # side fan button bottom tapped once
+  - platform: event
+    event_type: zwave_js_value_notification
+    event_data:
+      node_id: 94
+      property_name: scene
+      property_key_name: '006'
+      value: KeyPressed
+    id: side-fan-button-bottom-tapped-once
+
+  action:
+  - choose:
+
+    # main light button pressed (fan light off)
+    - conditions:
+      - condition: trigger
+        id: main-light-button-pressed
+      - condition: state
+        entity_id: light.office_switch
+        state: 'off'
+      sequence:
+      - service: light.turn_on
+        target:
+          entity_id: light.office_switch
+        data:
+          brightness_pct: 100
+
+    # main light button pressed (fan light on)
+    - conditions:
+      - condition: trigger
+        id: main-light-button-pressed
+      - condition: state
+        entity_id: light.office_switch
+        state: 'on'
+      sequence:
+      - service: light.turn_off
+        target:
+          entity_id: light.office_switch
+
+    # side light button top tapped once
+    - conditions:
+      - condition: trigger
+        id: side-light-button-top-tapped-once
+      sequence:
+      - service: light.turn_on
+        entity_id: light.office_switch
+        data_template:
+          brightness: >-
+            {% set maximum = 255 %}
+            {% set percentStep = 25 %}
+
+            {% set brightness = 0 %}
+            {% if ('brightness' in states.light.office_switch.attributes) and (states.light.office_switch.attributes.brightness != None) %}
+              {% set brightness = states.light.office_switch.attributes.brightness %}
+            {% endif %}
+
+            {% set percent = (((brightness / maximum) * 100) + percentStep) %}
+            {% if (percent > 100) %}
+              {% set percent = 100 %}
+            {% endif %}
+
+            {{ ((percent / 100) * maximum) }}
+
+    # side light button bottom tapped once
+    - conditions:
+      - condition: trigger
+        id: side-light-button-bottom-tapped-once
+      sequence:
+      - service: light.turn_on
+        entity_id: light.office_switch
+        data_template:
+          brightness: >-
+            {% set maximum = 255 %}
+            {% set percentStep = 25 %}
+
+            {% set brightness = 0 %}
+            {% if ('brightness' in states.light.office_switch.attributes) and (states.light.office_switch.attributes.brightness != None) %}
+              {% set brightness = states.light.office_switch.attributes.brightness %}
+            {% endif %}
+
+            {% set percent = (((brightness / maximum) * 100) - percentStep) %}
+            {% if (percent < 0) %}
+              {% set percent = 0 %}
+            {% endif %}
+
+            {{ ((percent / 100) * maximum) }}
+
+    # main fan button pressed (fan off)
+    - conditions:
+      - condition: trigger
+        id: main-fan-button-pressed
+      - condition: state
+        entity_id: fan.office_switch
+        state: 'off'
+      sequence:
+      - service: fan.turn_on
+        target:
+          entity_id: fan.office_switch
+        data:
+          percentage: 100
+
+    # main fan button pressed (fan on)
+    - conditions:
+      - condition: trigger
+        id: main-fan-button-pressed
+      - condition: state
+        entity_id: fan.office_switch
+        state: 'on'
+      sequence:
+      - service: fan.turn_off
+        target:
+          entity_id: fan.office_switch
+
+    # side fan button top tapped once
+    - conditions:
+      - condition: trigger
+        id: side-fan-button-top-tapped-once
+      sequence:
+      - service: fan.turn_on
+        target:
+          entity_id: fan.office_switch
+        data_template:
+          percentage: >-
+            {% set percent = 0 %}
+            {% if 'percentage' in states.fan.office_switch.attributes %}
+              {% set percent = states.fan.office_switch.attributes.percentage %}
+            {% endif %}
+
+            {% set step = 16.67 %}
+            {% if 'percentage_step' in states.fan.office_fan.attributes %}
+              {% set step = states.fan.office_fan.attributes.percentage_step %}
+            {% endif %}
+
+            {% set percent = percent + step %}
+            {% if (percent > 100) %}
+              {% set percent = 100 %}
+            {% endif %}
+
+            {{ percent }}
+
+    # side fan button bottom tapped once
+    - conditions:
+      - condition: trigger
+        id: side-fan-button-bottom-tapped-once
+      sequence:
+      - service: fan.turn_on
+        target:
+          entity_id: fan.office_switch
+        data_template:
+          percentage: >-
+            {% set percent = 0 %}
+            {% if 'percentage' in states.fan.office_switch.attributes %}
+              {% set percent = states.fan.office_switch.attributes.percentage %}
+            {% endif %}
+
+            {% set step = 16.67 %}
+            {% if 'percentage_step' in states.fan.office_fan.attributes %}
+              {% set step = states.fan.office_fan.attributes.percentage_step %}
+            {% endif %}
+
+            {% set percent = percent - step %}
+            {% if (percent < 0) %}
+              {% set percent = 0 %}
+            {% endif %}
+
+            {{ percent }}
