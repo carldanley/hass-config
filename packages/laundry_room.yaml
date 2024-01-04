@@ -1,0 +1,57 @@
+group:
+
+  lights_laundry_room:
+    name: All Laundry Room Lights
+    entities:
+    - switch.laundry_room_switch
+
+homeassistant:
+  customize:
+
+    switch.laundry_room_switch:
+      friendly_name: Laundry Room Switch
+
+automation:
+
+#######################################
+# CEILING LIGHTS AUTOMATICALLY TOGGLE #
+#######################################
+
+- id: 6b6634fe-2fe6-4b96-8c0e-1893b8d73825
+  alias: laundry room - ceiling lights automatically toggle
+  trigger:
+
+  # motion detected
+  - platform: state
+    entity_id: binary_sensor.laundry_room_motion_sensor_occupancy
+    to: 'on'
+    id: motion-detected
+
+  # no more motion
+  - platform: state
+    entity_id: binary_sensor.laundry_room_motion_sensor_occupancy
+    to: 'off'
+    for:
+      minutes: 5
+    id: no-more-motion
+
+  action:
+  - choose:
+
+    # motion detected
+    - conditions:
+      - condition: trigger
+        id: motion-detected
+      sequence:
+      - service: switch.turn_on
+        target:
+          entity_id: switch.laundry_room_switch
+
+    # no more motion
+    - conditions:
+      - condition: trigger
+        id: no-more-motion
+      sequence:
+      - service: switch.turn_off
+        target:
+          entity_id: switch.laundry_room_switch
