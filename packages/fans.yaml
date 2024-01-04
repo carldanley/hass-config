@@ -1,0 +1,14 @@
+group:
+
+  fans_all:
+    name: All fans
+    entities:
+    - fan.sadies_room_main_switch
+    - fan.office_switch
+    - fan.great_room_fan
+    - fan.master_bedroom_fan
+    - fan.patio_fan
+    - fan.porch_fan
+
+    # this will eventually become a switch
+    - fan.pennys_room_fan

@@ -1,0 +1,52 @@
+automation:
+
+#############################
+# LIGHT SWITCH IS AUTOMATED #
+#############################
+
+- id: c2a90257-f99f-432b-af81-4dec906e1483
+  alias: great room - light switch is automated
+  trigger:
+
+  # two taps up
+  - platform: event
+    event_type: zwave_js_value_notification
+    event_data:
+      node_id: 96
+      property_name: scene
+      property_key_name: '002'
+      value: KeyPressed2x
+    id: two-taps-up
+
+  # two taps down
+  - platform: event
+    event_type: zwave_js_value_notification
+    event_data:
+      node_id: 96
+      property_name: scene
+      property_key_name: '001'
+      value: KeyPressed2x
+    id: two-taps-down
+
+  action:
+  - choose:
+
+    # two taps up
+    - conditions:
+      - condition: trigger
+        id: two-taps-up
+      sequence:
+      - service: fan.turn_on
+        target:
+          entity_id: fan.great_room_fan
+        data:
+          speed: high
+
+    # two taps down
+    - conditions:
+      - condition: trigger
+        id: two-taps-down
+      sequence:
+      - service: fan.turn_off
+        target:
+          entity_id: fan.great_room_fan
