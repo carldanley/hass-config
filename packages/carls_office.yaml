@@ -280,3 +280,146 @@ automation:
             {% endif %}
 
             {{ percentage }}
+
+#####################
+# CUBE CONTROLS FAN #
+#####################
+
+- id: 1b100a62-eb6a-4e1a-af70-11d3eaef2262
+  alias: carls office - cube controls fan
+  trigger:
+
+  # tap
+  - platform: mqtt
+    topic: "zigbee2mqtt/Carls Office Cube/action"
+    payload: "tap"
+    id: tap
+
+  action:
+  - choose:
+
+    # tap on side 1 toggles fan
+    - conditions:
+      - condition: state
+        entity_id: sensor.carls_office_cube_side
+        state: '1'
+      - condition: trigger
+        id: tap
+      sequence:
+      - service: fan.toggle
+        target:
+          entity_id: fan.office_switch
+
+#######################
+# CUBE CONTROLS LIGHT #
+#######################
+
+- id: b4758783-f9ad-4e57-bbe1-2fa97f0a6803
+  alias: carls office - cube controls light
+  max_exceeded: silent
+  trigger:
+
+  # tap
+  - platform: mqtt
+    topic: "zigbee2mqtt/Carls Office Cube/action"
+    payload: "tap"
+    id: tap
+
+  # rotate-left
+  - platform: mqtt
+    topic: "zigbee2mqtt/Carls Office Cube/action"
+    payload: "rotate_left"
+    id: rotate-left
+
+  # rotate-right
+  - platform: mqtt
+    topic: "zigbee2mqtt/Carls Office Cube/action"
+    payload: "rotate_right"
+    id: rotate-right
+
+  action:
+  - choose:
+
+    # tap on side 0 turns fan light on
+    - conditions:
+      - condition: state
+        entity_id: sensor.carls_office_cube_side
+        state: '0'
+      - condition: trigger
+        id: tap
+      - condition: state
+        entity_id: light.office_switch
+        state: 'off'
+      sequence:
+      - service: light.turn_on
+        target:
+          entity_id: light.office_switch
+        data:
+          brightness_pct: 100
+
+    # tap on side 0 turns fan light off
+    - conditions:
+      - condition: state
+        entity_id: sensor.carls_office_cube_side
+        state: '0'
+      - condition: trigger
+        id: tap
+      - condition: state
+        entity_id: light.office_switch
+        state: 'on'
+      sequence:
+      - service: light.turn_off
+        target:
+          entity_id: light.office_switch
+
+    # rotate-left on side 0 decreases fan light brightness
+    - conditions:
+      - condition: state
+        entity_id: sensor.carls_office_cube_side
+        state: '0'
+      - condition: trigger
+        id: rotate-left
+      sequence:
+      - service: light.turn_on
+        target:
+          entity_id: light.office_switch
+        data:
+          brightness_pct: >-
+            {% set brightness = state_attr('light.office_switch', 'brightness') %}
+            {% set step = 25 %}
+            {% if not brightness %}
+              0
+            {% else %}
+              {% set percent = (((brightness | int) / 255) * 100) - step %}
+              {% if percent < 0 %}
+                0
+              {% else %}
+                {{ percent }}
+              {% endif %}
+            {% endif %}
+
+    # rotate-right on side 0 increases fan light brightness
+    - conditions:
+      - condition: state
+        entity_id: sensor.carls_office_cube_side
+        state: '0'
+      - condition: trigger
+        id: rotate-right
+      sequence:
+      - service: light.turn_on
+        target:
+          entity_id: light.office_switch
+        data:
+          brightness_pct: >-
+            {% set brightness = state_attr('light.office_switch', 'brightness') %}
+            {% set step = 25 %}
+            {% if not brightness %}
+              25
+            {% else %}
+              {% set percent = (((brightness | int) / 255) * 100) + step %}
+              {% if percent > 100 %}
+                100
+              {% else %}
+                {{ percent }}
+              {% endif %}
+            {% endif %}
