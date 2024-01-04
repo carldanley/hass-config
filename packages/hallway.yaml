@@ -1,0 +1,188 @@
+group:
+
+  lights_hallway_pendants:
+    name: Hallway Pendant Lights
+    entities:
+    - light.hallway_pendant_1
+    - light.hallway_pendant_2
+    - light.hallway_pendant_3
+
+binary_sensor:
+
+- platform: template
+  sensors:
+
+    hallway_motion:
+      friendly_name: Hallway Motion
+      icon_template: mdi:walk
+      value_template: >-
+        {% set front_door_motion = is_state('binary_sensor.front_door_hallway_motion_sensor_occupancy', 'on') %}
+        {% set kitchen_motion = is_state('binary_sensor.hallway_kitchen_motion_sensor_occupancy', 'on') %}
+
+        {{ front_door_motion or kitchen_motion }}
+
+automation:
+
+######################################
+# PENDANT LIGHTS SWITCH IS AUTOMATED #
+######################################
+
+- id: 0d59a89c-b53a-4b3e-b5af-c94ac2321ac9
+  alias: hallway - pendant lights switch is automated
+  trigger:
+
+  # one tap up
+  - platform: event
+    event_type: zwave_js_value_notification
+    event_data:
+      node_id: 91
+      property_name: scene
+      property_key_name: '002'
+      value: KeyPressed
+    id: one-tap-up
+
+  # one tap down
+  - platform: event
+    event_type: zwave_js_value_notification
+    event_data:
+      node_id: 91
+      property_name: scene
+      property_key_name: '001'
+      value: KeyPressed
+    id: one-tap-down
+
+  # hallway pendants turn on
+  - platform: state
+    entity_id: group.lights_hallway_pendants
+    to: 'on'
+    id: hallway-pendants-turn-on
+
+  # hallway pendants turn off
+  - platform: state
+    entity_id: group.lights_hallway_pendants
+    to: 'off'
+    id: hallway-pendants-turn-off
+
+  action:
+  - choose:
+
+    # one tap up
+    - conditions:
+      - condition: trigger
+        id: one-tap-up
+      sequence:
+      - service: light.turn_on
+        target:
+          entity_id: group.lights_kitchen_pendants
+
+    # one tap down
+    - conditions:
+      - condition: trigger
+        id: one-tap-down
+      sequence:
+      - service: light.turn_off
+        target:
+          entity_id: group.lights_kitchen_pendants
+
+    # hallway pendants turn on
+    - conditions:
+      - condition: trigger
+        id: hallway-pendants-turn-on
+      sequence:
+      - service: script.inovelli_switch_set_brightness_when_switch_on
+        data:
+          entity_id: light.kitchen_pendant_lights_switch
+          level: 10
+
+    # hallway pendants turn off
+    - conditions:
+      - condition: trigger
+        id: hallway-pendants-turn-off
+      sequence:
+      - service: script.inovelli_switch_set_brightness_when_switch_on
+        data:
+          entity_id: light.kitchen_pendant_lights_switch
+          level: 2
+
+#######################################
+# PENDANT LIGHTS AUTOMATICALLY TOGGLE #
+#######################################
+
+- id: b0372972-52fe-4304-bb41-50962164aeec
+  alias: hallway - pendant lights automatically toggle
+  trigger:
+
+  # sunrise
+  - platform: sun
+    event: sunrise
+    offset: '00:15:00'
+    id: sunrise
+
+  # motion detected
+  - platform: state
+    entity_id: binary_sensor.hallway_motion
+    from: 'off'
+    to: 'on'
+    id: motion-detected
+
+  # no more motion detected
+  - platform: state
+    entity_id: binary_sensor.hallway_motion
+    from: 'on'
+    to: 'off'
+    for:
+      minutes: 5
+    id: no-more-motion-detected
+
+  action:
+  - choose:
+
+    # sunrise
+    - conditions:
+      - condition: trigger
+        id: sunrise
+      sequence:
+      - service: light.turn_off
+        target:
+          entity_id: group.lights_hallway_pendants
+
+    # motion detected
+    - conditions:
+      - condition: trigger
+        id: motion-detected
+      - condition: state
+        entity_id: group.lights_hallway_pendants
+        state: 'off'
+        for:
+          seconds: 10
+      - condition: or
+        conditions:
+        - condition: sun
+          after: sunset
+          after_offset: '-00:15:00'
+        - condition: sun
+          before: sunrise
+          before_offset: '00:15:00'
+      sequence:
+      - service: light.turn_on
+        data:
+          brightness_pct: 100
+        target:
+          entity_id: group.lights_hallway_pendants
+
+    # no more motion detected
+    - conditions:
+      - condition: trigger
+        id: no-more-motion-detected
+      - condition: or
+        conditions:
+        - condition: sun
+          after: sunset
+          after_offset: '-00:15:00'
+        - condition: sun
+          before: sunrise
+          before_offset: '00:15:00'
+      sequence:
+      - service: light.turn_off
+        target:
+          entity_id: group.lights_hallway_pendants

@@ -1,0 +1,84 @@
+camera:
+
+########################
+# FOX HURRICANE MODELS #
+########################
+
+- name: fox_hurricane_models_raw
+  platform: generic
+  still_image_url: https://www.myfoxhurricane.com/custom/tropical/models_storm1.jpg
+
+- name: fox_hurricane_models
+  platform: local_file
+  file_path: /tmp/fox-hurricane-models.jpg
+
+#########################
+# FOX HURRICANE TRACKER #
+#########################
+
+- name: fox_hurricane_tracker_raw
+  platform: generic
+  still_image_url: https://www.myfoxhurricane.com/custom/caribbean/caribbean_ir_sat_1.jpg
+
+- name: fox_hurricane_tracker
+  platform: local_file
+  file_path: /tmp/fox-hurricane-tracker.jpg
+
+######################
+# NOAA MIAMI TRACKER #
+######################
+
+- name: noaa_miami_tracker_raw
+  platform: generic
+  still_image_url: https://www.nhc.noaa.gov/xgtwo/two_atl_2d0.png
+
+- name: noaa_miami_tracker
+  platform: local_file
+  file_path: /tmp/noaa-miami-tracker.jpg
+
+homeassistant:
+  customize:
+
+    camera.fox_hurricane_tracker:
+      friendly_name: Fox Hurricane Tracker
+
+    camera.fox_hurricane_models:
+      friendly_name: Fox Hurricane Models
+
+    camera.noaa_miami_tracker:
+      friendly_name: NOAA Hurricane Tracker - Miami
+
+automation:
+
+########################
+# REFRESH RADAR IMAGES #
+########################
+
+- id: d95ca3f7-8235-4b6e-8313-afa7c052b5b2
+  alias: hurricane trackers - refresh radar images
+  trigger:
+  - platform: time_pattern
+    minutes: '/1'
+
+  action:
+
+  # fox hurricane tracker
+  - service: camera.snapshot
+    data:
+      filename: /tmp/fox-hurricane-tracker.jpg
+    target:
+      entity_id: camera.fox_hurricane_tracker_raw
+
+  # fox hurricane models
+  - service: camera.snapshot
+    data:
+      filename: /tmp/fox-hurricane-models.jpg
+    target:
+      entity_id: camera.fox_hurricane_models_raw
+
+  # noaa tracker
+  - service: camera.snapshot
+    data:
+      filename: /tmp/noaa-miami-tracker.jpg
+    target:
+      entity_id: camera.noaa_miami_tracker_raw
