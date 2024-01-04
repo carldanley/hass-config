@@ -1,0 +1,36 @@
+automation:
+
+#######################################
+# SONOS SPEAKERS UNJOIN AUTOMATICALLY #
+#######################################
+
+- id: 1fd6f15b-57ed-4296-8c85-52d9cf0d68f6
+  alias: porch - sonos speakers unjoin automatically
+  trigger:
+  - platform: state
+    entity_id: media_player.porch
+
+  condition:
+  - condition: template
+    value_template: >-
+      {%- macro speaker_is_allowed(speaker) -%}
+        {%- if speaker == 'media_player.porch' -%}
+          true
+        {%- else -%}
+          false
+        {%- endif -%}
+      {%- endmacro -%}
+
+      {%- set ns = namespace(shouldUnjoin=false) %}
+      {%- for speaker in state_attr('media_player.porch', 'sonos_group') -%}
+        {%- if speaker_is_allowed(speaker) == 'false' -%}
+          {%- set ns.shouldUnjoin = true -%}
+        {%- endif -%}
+      {%- endfor -%}
+
+      {{ ns.shouldUnjoin }}
+
+  action:
+  - service: sonos.unjoin
+    target:
+      entity_id: media_player.porch
