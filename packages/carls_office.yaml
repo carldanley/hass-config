@@ -1,5 +1,5 @@
 - id: 62ab2255-a7f8-4243-b53e-341d6998cba1
-  alias: office - light switch is automated
+  alias: carls office - light switch is automated
   max_exceeded: silent
   trigger:
 
