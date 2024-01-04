@@ -33,6 +33,7 @@ homeassistant:
   internal_url: !env_var EXTERNAL_URL
   media_dirs:
     sounds: /config/www/sounds
+  packages: !include_dir_named packages
 
 logger:
   default: warning

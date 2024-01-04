@@ -1,0 +1,15 @@
+shell_command:
+  deploy_config: cd /config && git reset --hard origin/main
+
+automation:
+- id: d3dc1b3a-cee9-47e3-9770-f54760038dd9
+  alias: webhook - deploy config
+
+  trigger:
+  - platform: webhook
+    webhook_id: !env_var DEPLOY_CONFIG_WEBHOOK_ID
+    local_only: false
+
+  action:
+  - service: shell_command.deploy_config
+  - service: homeassistant.reload_all

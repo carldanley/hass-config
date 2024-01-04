@@ -1,0 +1,11 @@
+automation:
+- id: 36b2d276-017a-4703-89cf-1db03ec37b11
+  alias: system - set theme on startup
+  trigger:
+  - platform: homeassistant
+    event: start
+
+  action:
+  - service: frontend.set_theme
+    data:
+      name: google-light
