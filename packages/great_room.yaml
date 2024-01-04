@@ -40,7 +40,7 @@ automation:
         target:
           entity_id: fan.great_room_fan
         data:
-          speed: high
+          percentage: 100
 
     # two taps down
     - conditions:
