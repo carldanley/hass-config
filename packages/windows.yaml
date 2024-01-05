@@ -1,0 +1,100 @@
+group:
+
+  windows_all:
+    name: All Windows
+    entities:
+    - binary_sensor.dining_room_left_window_contact
+    - binary_sensor.dining_room_right_window_contact
+
+script:
+
+  #####################################
+  # SEND WINDOW MOVEMENT NOTIFICATION #
+  #####################################
+
+  send_window_movement_notification:
+    alias: Send Window Movement Notification
+    sequence:
+    - service: notify.critical_notification_audience
+      data:
+        title: >-
+          {% if (states(sensor) | lower) == 'on' %}
+            ⬆️ Window Opened ⬆️
+          {% else %}
+            ⬇️ Window Closed ⬇️
+          {% endif %}
+        message: "{{ name }}"
+
+automation:
+
+##################################
+# OPENING A WINDOW PLAYS A SOUND #
+##################################
+
+- id: 116c26da-46a6-4a52-91ee-5727a53f1a39
+  alias: windows - opening plays sound
+  trigger:
+  - platform: state
+    entity_id: group.windows_all
+    to: 'on'
+
+  action:
+
+  # house is unarmed
+  - sequence:
+    - service: script.sonos_cloud_play_local_sound
+      data_template:
+        speakers: >-
+          {% set speakers = "'media_player.great_room_cloud'" %}
+          {% set speakers = speakers + ", 'media_player.office_cloud'" %}
+          {% set speakers = speakers + ", 'media_player.roam_cloud'" %}
+
+          {% set speakers = '[' + speakers + ']' %}
+          {{ speakers }}
+        file: window-door-slider-beep.mp3
+        volume: 40
+
+##################################
+# MOVEMENT TRIGGERS NOTIFICATION #
+##################################
+
+- id: b0f2bcd1-ca59-43d4-9315-174230102c1c
+  alias: windows - movement triggers notification
+  trigger:
+
+  # dining room (left)
+  - platform: state
+    entity_id: binary_sensor.dining_room_left_window_contact
+    not_from: &notFrom
+    - "unknown"
+    - "unavailable"
+    id: dining-room-left
+
+  # dining room (right)
+  - platform: state
+    entity_id: binary_sensor.dining_room_right_window_contact
+    not_from: *notFrom
+    id: dining-room-right
+
+  action:
+  - choose:
+
+    # dining room (left)
+    - conditions:
+      - condition: trigger
+        id: dining-room-left
+      sequence:
+      - service: script.send_window_movement_notification
+        data:
+          name: Dining Room Window (Left)
+          sensor: binary_sensor.dining_room_left_window_contact
+
+    # dining room (right)
+    - conditions:
+      - condition: trigger
+        id: dining-room-right
+      sequence:
+      - service: script.send_window_movement_notification
+        data:
+          name: Dining Room Window (Right)
+          sensor: binary_sensor.dining_room_right_window_contact
