@@ -22,8 +22,7 @@ automation:
           {% set speakers = speakers + ", 'media_player.patio_cloud'" %}
           {% set speakers = speakers + ", 'media_player.garage_cloud'" %}
 
-          {% set speakers = '[' + speakers + ']' %}
-          {{ speakers }}
+          [{{ speakers }}]
         file: doorbell.mp3
         volume: 80
 

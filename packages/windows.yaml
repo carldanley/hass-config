@@ -39,20 +39,16 @@ automation:
     to: 'on'
 
   action:
+  - service: script.sonos_cloud_play_local_sound
+    data_template:
+      speakers: >-
+        {% set speakers = "'media_player.great_room_cloud'" %}
+        {% set speakers = speakers + ", 'media_player.office_cloud'" %}
+        {% set speakers = speakers + ", 'media_player.roam_cloud'" %}
 
-  # house is unarmed
-  - sequence:
-    - service: script.sonos_cloud_play_local_sound
-      data_template:
-        speakers: >-
-          {% set speakers = "'media_player.great_room_cloud'" %}
-          {% set speakers = speakers + ", 'media_player.office_cloud'" %}
-          {% set speakers = speakers + ", 'media_player.roam_cloud'" %}
-
-          {% set speakers = '[' + speakers + ']' %}
-          {{ speakers }}
-        file: window-door-slider-beep.mp3
-        volume: 40
+        [{{ speakers }}]
+      file: window-door-slider-beep.mp3
+      volume: 40
 
 ##################################
 # MOVEMENT TRIGGERS NOTIFICATION #
