@@ -1,0 +1,146 @@
+input_number:
+
+  irrigation_run_time_minutes:
+    initial: 35
+    min: 1
+    max: 45
+
+script:
+
+  ##################
+  # RUN FRONT ZONE #
+  ##################
+
+  irrigation_run_zone_front:
+    alias: Irrigation Run Zone Front
+    sequence:
+    - service: &zoneService rachio.start_multiple_zone_schedule
+      target:
+        entity_id:
+        - &rachioFront switch.rachio_front
+      data_template: &dataTemplate
+        duration: "{{ states('input_number.irrigation_run_time_minutes') }}"
+
+  #################
+  # RUN BACK ZONE #
+  #################
+
+  irrigation_run_zone_back:
+    alias: Irrigation Run Zone Back
+    sequence:
+    - service: *zoneService
+      target:
+        entity_id:
+        - &rachioBack switch.rachio_back
+      data_template: *dataTemplate
+
+  #################
+  # RUN SIDE ZONE #
+  #################
+
+  irrigation_run_zone_side:
+    alias: Irrigation Run Zone Side
+    sequence:
+    - service: *zoneService
+      target:
+        entity_id:
+        - &rachioSide switch.rachio_side
+      data_template: *dataTemplate
+
+  #################
+  # RUN ALL ZONES #
+  #################
+
+  irrigation_run_all_zones:
+    alias: Irrigation Run All Zones
+    sequence:
+    - service: *zoneService
+      target:
+        entity_id:
+        - *rachioFront
+        - *rachioBack
+        - *rachioSide
+      data_template: *dataTemplate
+
+automation:
+
+######################
+# SENDS NOTIFICATION #
+######################
+
+- id: 91500ce1-1d07-4040-948c-539c5f05e5fe
+  alias: irrigation - sends notifications
+  trigger:
+
+  # rachio zone starts
+  - platform: state
+    entity_id:
+    - *rachioFront
+    - *rachioBack
+    - *rachioSide
+    to: 'on'
+    id: rachio-zone-starts
+
+  action:
+  - choose:
+
+    # rachio zone starts
+    - conditions:
+      - condition: trigger
+        id: rachio-zone-starts
+      sequence:
+      - service: notify.info_notification_audience
+        data:
+          title: "💧 Irrigation System 💧"
+          message: "{{ trigger.to_state.name }} has started irrigating."
+
+######################
+# AUTOMATICALLY RUNS #
+######################
+
+- id: 7dc2e311-a031-4cec-8bf4-982025f4eb62
+  alias: irrigation - automatically runs
+  trigger:
+
+  # first-soak
+  - platform: time
+    at: '01:30:02'
+    id: first-soak
+
+  # second-soak
+  - platform: time
+    at: '02:06:04'
+    id: second-soak
+
+  # third-soak
+  - platform: time
+    at: '02:42:06'
+    id: third-soak
+
+  action:
+  - choose:
+
+    # time triggered on any of these 4 weekdays
+    - conditions:
+      - condition: time
+        weekday:
+        - tue
+        - thu
+        - sun
+      - condition: or
+        conditions:
+        - condition: trigger
+          id: first-soak
+        - condition: trigger
+          id: second-soak
+        - condition: trigger
+          id: third-soak
+      sequence:
+      - service: rachio.start_multiple_zone_schedule
+        target:
+          entity_id:
+          - *rachioFront
+          - *rachioBack
+          - *rachioSide
+        data:
+          duration: 12, 12, 12
