@@ -136,7 +136,7 @@ automation:
         - condition: trigger
           id: third-soak
       sequence:
-      - service: rachio.start_multiple_zone_schedule
+      - service: *zoneService
         target:
           entity_id:
           - *rachioFront
