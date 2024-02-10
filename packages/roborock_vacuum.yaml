@@ -187,10 +187,10 @@ script:
 
 camera:
 - platform: xiaomi_cloud_map_extractor
-  host: !env XIAOMI_VACUUM_HOST
-  token: !env XIAOMI_VACUUM_TOKEN
-  username: !env XIAOMI_CLOUD_USERNAME
-  password: !env XIAOMI_CLOUD_PASSWORD
+  host: !env_var XIAOMI_VACUUM_HOST
+  token: !env_var XIAOMI_VACUUM_TOKEN
+  username: !env_var XIAOMI_CLOUD_USERNAME
+  password: !env_var XIAOMI_CLOUD_PASSWORD
   country: us
   draw:
   - all
