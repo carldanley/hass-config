@@ -1,0 +1,273 @@
+input_datetime:
+  automate_roborock_vacuum_house_at_night_time:
+    name: Automate Roborock Vacuum House at Night Time
+    has_date: false
+    has_time: true
+    initial: '02:00'
+
+script:
+
+  #########################
+  # SET MOPPING INTENSITY #
+  #########################
+
+  set_roborock_vacuum_mopping_intensity:
+    alias: Set Roborock Vacuum Mopping Intensity
+    fields:
+      mopping_intensity:
+        description: "Mopping intensity - can be: off | low | medium | high"
+        example: low
+
+    sequence:
+    - variables:
+        mopping_intensity_options:
+          'off': 200
+          low: 201
+          medium: 202
+          high: 203
+        mopping_intensity_code: '{{ mopping_intensity_options[mopping_intensity] | default("medium") }}'
+    
+    - choose:
+
+      # checks to make sure a valid value was specified
+      - conditions:
+        - condition: template
+          value_template: '{{ mopping_intensity not in (mopping_intensity_options | list) }}'
+        sequence:
+        - service: system_log.write
+          data:
+            message: >-
+              Invalid mopping_intensity value '{{ mopping_intensity }}'. Valid values are {{ mopping_intensity_options | list | join(', ') }}.
+            level: warning
+            logger: roborock
+      
+      # do this most of the time
+      default:
+      - service: vacuum.send_command
+        target:
+          entity_id: vacuum.roborock_vacuum_a27
+        data:
+          command: set_water_box_custom_mode
+          params: '[{{ mopping_intensity_code }}]'
+
+  #####################
+  # SET MOPPING ROUTE #
+  #####################
+
+  set_roborock_vacuum_mopping_route:
+    alias: Set Roborock Vacuum Mopping Route
+    fields:
+      mopping_route:
+        description: "Mopping route - can be: standard | deep | deep+"
+        example: standard
+
+    sequence:
+    - variables:
+        mopping_route_options:
+          standard: 300
+          deep: 301
+          'deep+': 303
+        mopping_route_code: '{{ mopping_route_options[mopping_route] | default("deep") }}'
+    
+    - choose:
+
+      # checks to make sure a valid value was specified
+      - conditions:
+        - condition: template
+          value_template: '{{ mopping_route not in (mopping_route_options | list) }}'
+        sequence:
+        - service: system_log.write
+          data:
+            message: >-
+              Invalid mopping_route value '{{ mopping_route }}'. Valid values are {{ mopping_route_options | list | join(', ') }}.
+            level: warning
+            logger: roborock
+      
+      # do this most of the time
+      default:
+      - service: vacuum.send_command
+        target:
+          entity_id: vacuum.roborock_vacuum_a27
+        data:
+          command: set_mop_mode
+          params: '[{{ mopping_route_code }}]'
+
+  #####################
+  # SET SUCTION POWER #
+  #####################
+
+  set_roborock_vacuum_suction_power:
+    alias: Set Roborock Vacuum Suction Power
+    fields:
+      suction_power:
+        description: "Suction power - can be: off | silent | balanced | turbo | max"
+        example: balanced
+
+    sequence:
+    - variables:
+        suction_power_options:
+          'off': 105
+          silent: 101
+          balanced: 102
+          turbo: 103
+          max: 104
+        suction_power_code: '{{ suction_power_options[suction_power] | default("balanced") }}'
+    
+    - choose:
+
+      # checks to make sure a valid value was specified
+      - conditions:
+        - condition: template
+          value_template: '{{ suction_power not in (suction_power_options | list) }}'
+        sequence:
+        - service: system_log.write
+          data:
+            message: >-
+              Invalid suction_power value '{{ suction_power }}'. Valid values are {{ suction_power_options | list | join(', ') }}.
+            level: warning
+            logger: roborock
+      
+      # do this most of the time
+      default:
+      - service: vacuum.send_command
+        target:
+          entity_id: vacuum.roborock_vacuum_a27
+        data:
+          command: set_custom_mode
+          params: '[{{ suction_power_code }}]'
+  
+  ####################
+  # CONFIGURE VACUUM #
+  ####################
+
+  configure_roborock_vacuum:
+    alias: Configure Vacuum
+    fields:
+      suction_power:
+        description: "Suction power - can be: off | silent | balanced | turbo | max"
+        example: balanced
+      mopping_intensity:
+        description: "Mopping intensity - can be: off | low | medium | high"
+        example: standard
+      mopping_route:
+        description: "Mopping route - can be: standard | deep | deep+"
+        example: standard
+
+    sequence:
+
+    # suction power
+    - if:
+      - condition: template
+        value_template: "{{ suction_power != '' }}"
+      then:
+      - service: script.set_roborock_vacuum_suction_power
+        data:
+          suction_power: "{{ suction_power }}"
+      - delay: &delay '00:00:02'
+
+    # mopping intensity
+    - if:
+      - condition: template
+        value_template: "{{ mopping_intensity != '' }}"
+      then:
+      - service: script.set_roborock_vacuum_mopping_intensity
+        data:
+          mopping_intensity: "{{ mopping_intensity }}"
+      - delay: *delay
+
+    # mopping route
+    - if:
+      - condition: template
+        value_template: "{{ mopping_route != '' }}"
+      then:
+      - service: script.set_roborock_vacuum_mopping_route
+        data:
+          mopping_route: "{{ mopping_route }}"
+      - delay: *delay
+
+camera:
+- platform: xiaomi_cloud_map_extractor
+  host: !secret XIAOMI_VACUUM_HOST
+  token: !secret XIAOMI_VACUUM_TOKEN
+  username: !secret XIAOMI_CLOUD_USERNAME
+  password: !secret XIAOMI_CLOUD_PASSWORD
+  country: us
+  draw:
+  - all
+  attributes:
+  - calibration_points
+  - charger
+  - goto_path
+  - goto_predicted_path
+  - goto
+  - image
+  - is_empty
+  - no_go_areas
+  - obstacles
+  - obstacles_with_photo
+  - path
+  - rooms
+  - vacuum_position
+  - vacuum_room
+  - walls
+  - zones
+
+automation:
+
+#############################
+# AUTOMATICALLY CLEAN HOUSE #
+#############################
+
+- id: fc19586a-efb6-46f4-bbf4-e974f5937460
+  alias: roborock vacuum - automatically clean house
+  trigger:
+
+  # vacuum at night
+  - platform: time
+    at: input_datetime.automate_vacuum_house_at_night_time
+    id: vacuum-at-night
+
+  action:
+  - choose:
+
+    # vacuum at night
+    - conditions:
+      - condition: trigger
+        id: vacuum-at-night
+      sequence:
+      - service: script.configure_vacuum
+        data:
+          suction_power: "balanced"
+          mopping_intensity: "off"
+      - service: vacuum.start
+        target:
+          entity_id: vacuum.roborock_vacuum_a27
+
+######################
+# SEND NOTIFICATIONS #
+######################
+
+- id: d106bb87-598c-4904-8e07-11852891b287
+  alias: roborock vacuum - send notifications
+  trigger:
+
+  # zoned cleaning complete
+  - platform: state
+    entity_id: vacuum.roborock_vacuum_a27
+    attribute: status
+    from: Zoned cleaning
+    to: Returning Home
+    id: zoned-cleaning-complete
+
+  action:
+  - choose:
+
+    # zoned cleaning complete
+    - conditions:
+      - condition: trigger
+        id: zoned-cleaning-complete
+      sequence:
+      - service: notify.info_notification_audience
+        data:
+          title: "✨ Vacuum ✨"
+          message: "Zoned cleaning completed!"
