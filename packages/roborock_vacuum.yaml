@@ -224,7 +224,7 @@ automation:
 
   # vacuum at night
   - platform: time
-    at: input_datetime.automate_vacuum_house_at_night_time
+    at: input_datetime.automate_roborock_vacuum_house_at_night_time
     id: vacuum-at-night
 
   action:
