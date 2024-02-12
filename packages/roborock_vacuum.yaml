@@ -235,7 +235,7 @@ automation:
       - condition: trigger
         id: vacuum-at-night
       sequence:
-      - service: script.configure_vacuum
+      - service: script.configure_roborock_vacuum
         data:
           suction_power: "balanced"
           mopping_intensity: "off"
