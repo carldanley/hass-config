@@ -34,3 +34,6 @@ __pycache__
 
 # Specific keeps
 !.gitkeep
+
+# zone identifiers
+*:Zone.Identifier
