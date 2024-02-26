@@ -8,6 +8,7 @@ notify:
   name: critical_notification_audience
   services:
   - service: mobile_app_carls_iphone
+  - service: mobile_app_kristines_iphone_hass
 
 ##############################
 # INFO NOTIFICATION AUDIENCE #
