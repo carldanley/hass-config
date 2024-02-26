@@ -1,3 +1,11 @@
+group:
+
+  lights_great_room:
+    name: All Great Room Lights
+    entities:
+    - light.great_room_fan
+    - light.great_room_lights_switch
+
 automation:
 
 #############################
