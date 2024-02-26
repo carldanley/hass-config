@@ -6,6 +6,15 @@ group:
     - light.great_room_fan
     - light.great_room_lights_switch
 
+homeassistant:
+  customize:
+
+    light.great_room_lights_switch:
+      friendly_name: Great Room Ceiling Lights
+
+    sensor.arcana_power_switch:
+      friendly_name: Arcana Power Switch
+
 automation:
 
 #############################
