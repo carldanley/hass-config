@@ -1,0 +1,24 @@
+mqtt:
+  light:
+
+  - name: front_porch_garden_middle_flood
+    schema: template
+    state_topic: "alfred/ha-fpp-mqtt/front_porch_garden_middle_flood/status"
+    state_template: "{{ value_json.state }}"
+    command_topic: "alfred/ha-fpp-mqtt/front_porch_garden_middle_flood/set"
+    command_off_template: >
+      {
+        "controller": "kb-dancer.batcave",
+        "state": "off"
+      }
+    command_on_template: >
+      {
+        "controller": "kb-dancer.batcave",
+        "state": "on"
+        {%- if red is defined and green is defined and blue is defined -%}
+        , "color": [{{ red }}, {{ green }}, {{ blue }}]
+        {%- endif -%}
+      }
+    red_template: "{{ value_json.color[0] }}"
+    green_template: "{{ value_json.color[1] }}"
+    blue_template: "{{ value_json.color[2] }}"
