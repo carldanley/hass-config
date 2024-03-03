@@ -1,3 +1,183 @@
+automation:
+
+#########################################
+# KULP BOXES AUTOMATICALLY TOGGLE POWER #
+#########################################
+
+- id: 144ea822-ebb9-4f77-b7cd-c0ab668588d4
+  alias: front yard lighting - kulp boxes automatically toggle power
+  trigger:
+
+  # auto on time
+  - platform: sun
+    event: sunset
+    id: auto-on-time
+
+  # auto check status time
+  - platform: sun
+    event: sunset
+    offset: "00:05:00"
+    id: auto-check-status-time
+
+  # auto select scene
+  - platform: sun
+    event: sunset
+    offset: "00:10:00"
+    id: auto-select-scene-time
+
+  # auto shutdown time
+  - platform: time
+    at: "23:00:00"
+    id: auto-shutdown-time
+
+  # auto off time
+  - platform: time
+    at: "23:05:00"
+    id: auto-off-time
+
+  action:
+  - choose:
+
+    # auto on time
+    - conditions:
+      - condition: trigger
+        id: auto-on-time
+      sequence:
+      - service: switch.turn_on
+        target:
+          entity_id: switch.porch_outlet_1
+      - service: switch.turn_on
+        target:
+          entity_id: switch.porch_outlet_2
+      - service: switch.turn_on
+        target:
+          entity_id: switch.garage_outlet_1
+      - service: notify.info_notification_audience
+        data:
+          title: "💡 Front Yard Lights 💡"
+          message: "Kulp boxes have been turned on."
+
+    # auto check status time
+    - conditions:
+      - condition: trigger
+        id: auto-check-status-time
+      - condition: state
+        entity_id:
+        - sensor.fpp_kb_dasher_ready
+        - sensor.fpp_kb_dancer_ready
+        - sensor.fpp_kb_prancer_ready
+        match: any
+        state: '0'
+      sequence:
+      - service: notify.info_notification_audience
+        data:
+          title: "🛑 Front Yard Lights 🛑"
+          message: "Not all of the kulp boxes turned on."
+
+    # auto select scene time
+    - conditions:
+      - condition: trigger
+        id: auto-select-scene-time
+      sequence:
+      - service: scene.turn_on
+        target:
+          entity_id: scene.ambient_lighting_front_yard_cotton_candy
+
+
+    # auto shutdown time
+    - conditions:
+      - condition: trigger
+        id: auto-shutdown-time
+      sequence:
+      - service: light.turn_off
+        target:
+          entity_id: group.lights_frontyard_landscaping_all
+      - service: notify.info_notification_audience
+        data:
+          title: "💡 Front Yard Lights 💡"
+          message: "Kulp Boxes are shutting down."
+      - service: rest_command.kulp_box_shutdown
+        data:
+          box: kb-dasher.batcave
+      - service: rest_command.kulp_box_shutdown
+        data:
+          box: kb-dancer.batcave
+      - service: rest_command.kulp_box_shutdown
+        data:
+          box: kb-prancer.batcave
+
+    # auto off time
+    - conditions:
+      - condition: trigger
+        id: auto-off-time
+      sequence:
+      - service: switch.turn_off
+        target:
+          entity_id: switch.porch_outlet_1
+      - service: switch.turn_off
+        target:
+          entity_id: switch.porch_outlet_2
+      - service: switch.turn_off
+        target:
+          entity_id: switch.garage_outlet_1
+      - service: notify.info_notification_audience
+        data:
+          title: "💡 Front Yard Lights 💡"
+          message: "Kulp Boxes have been turned off."
+
+rest_command:
+
+  kulp_box_shutdown:
+    url: "http://{{ box }}/api/system/shutdown"
+    method: GET
+
+  kulp_box_reboot:
+    url: "http://{{ box }}/api/system/reboot"
+    method: GET
+
+scene:
+
+- name: ambient_lighting_front_yard_cotton_candy
+  entities:
+
+    # odd lights (purple)
+    light.front_left_red_sisters_left_flood:
+      state: on
+      rgb_color: [190, 0, 255]
+    light.front_left_red_sisters_right_flood:
+      state: on
+      rgb_color: [190, 0, 255]
+    light.left_coach_light_1:
+      state: on
+      rgb_color: [190, 0, 255]
+    light.right_coach_light_2:
+      state: on
+      rgb_color: [190, 0, 255]
+    light.front_porch_garden_middle_flood:
+      state: on
+      rgb_color: [190, 0, 255]
+
+
+    # even lights (blue)
+    light.front_left_christmas_palm_flood:
+      state: on
+      rgb_color: [0, 190, 255]
+    light.right_coach_light_1:
+      state: on
+      rgb_color: [0, 190, 255]
+    light.left_coach_light_2:
+      state: on
+      rgb_color: [0, 190, 255]
+    light.front_porch_garden_left_flood:
+      state: on
+      rgb_color: [0, 190, 255]
+    light.front_right_robellini_flood:
+      state: on
+      rgb_color: [0, 190, 255]
+    light.front_porch_garden_right_flood:
+      state: on
+      rgb_color: [0, 190, 255]
+
 homeassistant:
   customize:
 
@@ -79,6 +259,18 @@ group:
     - light.front_right_robellini_flood
 
 mqtt:
+
+  sensor:
+
+  - name: fpp_kb_dancer_ready
+    state_topic: "falcon/player/kb-dancer/ready"
+
+  - name: fpp_kb_prancer_ready
+    state_topic: "falcon/player/kb-prancer/ready"
+
+  - name: fpp_kb_dasher_ready
+    state_topic: "falcon/player/kb-dasher/ready"
+
   light:
 
   - name: front_left_red_sisters_left_flood
