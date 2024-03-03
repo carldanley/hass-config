@@ -1,0 +1,87 @@
+automation:
+
+##################################
+# MOVEMENT TRIGGERS NOTIFICATION #
+##################################
+
+- id: 00295bba-8ade-496e-85c9-a443d7900f34
+  alias: sliders - movement triggers notification
+  trigger:
+
+  # dining room
+  - platform: state
+    entity_id: binary_sensor.dining_room_slider_contact
+    not_from:
+    - "unknown"
+    - "unavailable"
+    id: dining-room
+
+  action:
+  - choose:
+
+    # dining room
+    - conditions:
+      - condition: trigger
+        id: dining-room
+      sequence:
+      - service: script.send_slider_movement_notification
+        data:
+          name: Dining Room Slider
+          sensor: binary_sensor.dining_room_slider_contact
+
+#######################
+# OPENING PLAYS SOUND #
+#######################
+
+- id: 53400e65-9275-49df-a9e0-ce12ec2b178c
+  alias: sliders - opening plays sound
+  trigger:
+
+  # sliders opened
+  - platform: state
+    entity_id: group.sliders_all
+    to: 'on'
+    id: sliders-opened
+
+  action:
+  - choose:
+
+    # sliders opened
+    - conditions:
+      - condition: trigger
+        id: sliders-opened
+      sequence:
+      - service: script.sonos_cloud_play_local_sound
+        data_template:
+          speakers: >-
+            {% set speakers = "'media_player.great_room_cloud'" %}
+            {% set speakers = speakers + ", 'media_player.office_cloud'" %}
+            {% set speakers = speakers + ", 'media_player.roam_cloud'" %}
+            {% set speakers = speakers + ", 'media_player.master_bedroom_cloud'" %}
+
+            {% set speakers = '[' + speakers + ']' %}
+            {{ speakers }}
+          file: window-door-slider-beep.mp3
+          volume: 70
+
+script:
+
+  send_slider_movement_notification:
+    alias: Send Slider Movement Notification
+    sequence:
+    - service: notify.critical_notification_audience
+      data:
+        title: >-
+          {% if (states(sensor) | lower) == 'on' %}
+            🔳 Slider Opened 🔳
+          {% else %}
+            🔲 Slider Closed 🔲
+          {% endif %}
+        message: "{{ name }}"
+
+group:
+
+  sliders_all:
+    name: All Sliders
+    entities:
+    - binary_sensor.dining_room_slider_contact
