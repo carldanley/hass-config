@@ -1,11 +1,223 @@
+homeassistant:
+  customize:
+
+    # frontyard left
+
+    light.front_left_red_sisters_right_flood:
+      friendly_name: Front Left Red Sisters Right Flood
+
+    light.front_left_red_sisters_left_flood:
+      friendly_name: Front Left Red Sisters Left Flood
+
+    light.front_left_christmas_palm_flood:
+      friendly_name: Front Left Christmas Palm Flood
+
+    # frontyard right
+
+    light.front_porch_garden_left_flood:
+      friendly_name: Front Porch Garden Left Flood
+
+    light.front_porch_garden_middle_flood:
+      friendly_name: Front Porch Garden Middle Flood
+
+    light.front_porch_garden_right_flood:
+      friendly_name: Front Porch Garden Right Flood
+
+    light.front_right_robellini_flood:
+      friendly_name: Front Right Robellini Flood
+
+group:
+
+  lights_frontyard_landscaping_all:
+    name: All Frontyard Landscaping Lights
+    entities:
+    # left side
+    - light.front_left_red_sisters_left_flood
+    - light.front_left_christmas_palm_flood
+    - light.front_left_red_sisters_right_flood
+
+    # right side
+    - light.front_porch_garden_left_flood
+    - light.front_porch_garden_middle_flood
+    - light.front_porch_garden_right_flood
+    - light.front_right_robellini_flood
+
+  lights_frontyard_landscaping_non_trees:
+    name: Frontyard Landscaping Non-tree Lights
+    entities:
+    # left side
+    - light.front_left_red_sisters_left_flood
+    - light.front_left_red_sisters_right_flood
+
+    # right side
+    - light.front_porch_garden_left_flood
+    - light.front_porch_garden_middle_flood
+    - light.front_porch_garden_right_flood
+
+  lights_frontyard_landscaping_left_side:
+    name: Frontyard Landscaping Left Side Lights
+    entities:
+    - light.front_left_red_sisters_left_flood
+    - light.front_left_christmas_palm_flood
+    - light.front_left_red_sisters_right_flood
+
+  lights_frontyard_landscaping_right_side:
+    name: Frontyard Landscaping Right Side Lights
+    entities:
+    - light.front_porch_garden_left_flood
+    - light.front_porch_garden_middle_flood
+    - light.front_porch_garden_right_flood
+    - light.front_right_robellini_flood
+
+  lights_frontyard_landscaping_trees:
+    name: Frontyard Landscaping Tree Lights
+    entities:
+    # left side
+    - light.front_left_christmas_palm_flood
+
+    # right side
+    - light.front_right_robellini_flood
+
 mqtt:
   light:
+
+  - name: front_left_red_sisters_left_flood
+    schema: template
+    state_topic: "alfred/ha-fpp-mqtt/front_left_red_sisters_left_flood/status"
+    state_template: "{{ value_json.state }}"
+    command_topic: "alfred/ha-fpp-mqtt/front_left_red_sisters_left_flood/set"
+    command_off_template: >
+      {
+        "controller": "kb-dasher.batcave",
+        "state": "off"
+      }
+    command_on_template: >
+      {
+        "controller": "kb-dasher.batcave",
+        "state": "on"
+        {%- if red is defined and green is defined and blue is defined -%}
+        , "color": [{{ red }}, {{ green }}, {{ blue }}]
+        {%- endif -%}
+      }
+    red_template: "{{ value_json.color[0] }}"
+    green_template: "{{ value_json.color[1] }}"
+    blue_template: "{{ value_json.color[2] }}"
+
+  - name: front_left_christmas_palm_flood
+    schema: template
+    state_topic: "alfred/ha-fpp-mqtt/front_left_christmas_palm_flood/status"
+    state_template: "{{ value_json.state }}"
+    command_topic: "alfred/ha-fpp-mqtt/front_left_christmas_palm_flood/set"
+    command_off_template: >
+      {
+        "controller": "kb-dasher.batcave",
+        "state": "off"
+      }
+    command_on_template: >
+      {
+        "controller": "kb-dasher.batcave",
+        "state": "on"
+        {%- if red is defined and green is defined and blue is defined -%}
+        , "color": [{{ red }}, {{ green }}, {{ blue }}]
+        {%- endif -%}
+      }
+    red_template: "{{ value_json.color[0] }}"
+    green_template: "{{ value_json.color[1] }}"
+    blue_template: "{{ value_json.color[2] }}"
+
+  - name: front_left_red_sisters_right_flood
+    schema: template
+    state_topic: "alfred/ha-fpp-mqtt/front_left_red_sisters_right_flood/status"
+    state_template: "{{ value_json.state }}"
+    command_topic: "alfred/ha-fpp-mqtt/front_left_red_sisters_right_flood/set"
+    command_off_template: >
+      {
+        "controller": "kb-dasher.batcave",
+        "state": "off"
+      }
+    command_on_template: >
+      {
+        "controller": "kb-dasher.batcave",
+        "state": "on"
+        {%- if red is defined and green is defined and blue is defined -%}
+        , "color": [{{ red }}, {{ green }}, {{ blue }}]
+        {%- endif -%}
+      }
+    red_template: "{{ value_json.color[0] }}"
+    green_template: "{{ value_json.color[1] }}"
+    blue_template: "{{ value_json.color[2] }}"  
+
+  - name: front_porch_garden_left_flood
+    schema: template
+    state_topic: "alfred/ha-fpp-mqtt/front_porch_garden_left_flood/status"
+    state_template: "{{ value_json.state }}"
+    command_topic: "alfred/ha-fpp-mqtt/front_porch_garden_left_flood/set"
+    command_off_template: >
+      {
+        "controller": "kb-prancer.batcave",
+        "state": "off"
+      }
+    command_on_template: >
+      {
+        "controller": "kb-prancer.batcave",
+        "state": "on"
+        {%- if red is defined and green is defined and blue is defined -%}
+        , "color": [{{ red }}, {{ green }}, {{ blue }}]
+        {%- endif -%}
+      }
+    red_template: "{{ value_json.color[0] }}"
+    green_template: "{{ value_json.color[1] }}"
+    blue_template: "{{ value_json.color[2] }}"
 
   - name: front_porch_garden_middle_flood
     schema: template
     state_topic: "alfred/ha-fpp-mqtt/front_porch_garden_middle_flood/status"
     state_template: "{{ value_json.state }}"
     command_topic: "alfred/ha-fpp-mqtt/front_porch_garden_middle_flood/set"
+    command_off_template: >
+      {
+        "controller": "kb-dancer.batcave",
+        "state": "off"
+      }
+    command_on_template: >
+      {
+        "controller": "kb-dancer.batcave",
+        "state": "on"
+        {%- if red is defined and green is defined and blue is defined -%}
+        , "color": [{{ red }}, {{ green }}, {{ blue }}]
+        {%- endif -%}
+      }
+    red_template: "{{ value_json.color[0] }}"
+    green_template: "{{ value_json.color[1] }}"
+    blue_template: "{{ value_json.color[2] }}"
+
+  - name: front_porch_garden_right_flood
+    schema: template
+    state_topic: "alfred/ha-fpp-mqtt/front_porch_garden_right_flood/status"
+    state_template: "{{ value_json.state }}"
+    command_topic: "alfred/ha-fpp-mqtt/front_porch_garden_right_flood/set"
+    command_off_template: >
+      {
+        "controller": "kb-dancer.batcave",
+        "state": "off"
+      }
+    command_on_template: >
+      {
+        "controller": "kb-dancer.batcave",
+        "state": "on"
+        {%- if red is defined and green is defined and blue is defined -%}
+        , "color": [{{ red }}, {{ green }}, {{ blue }}]
+        {%- endif -%}
+      }
+    red_template: "{{ value_json.color[0] }}"
+    green_template: "{{ value_json.color[1] }}"
+    blue_template: "{{ value_json.color[2] }}"
+
+  - name: front_right_robellini_flood
+    schema: template
+    state_topic: "alfred/ha-fpp-mqtt/front_right_robellini_flood/status"
+    state_template: "{{ value_json.state }}"
+    command_topic: "alfred/ha-fpp-mqtt/front_right_robellini_flood/set"
     command_off_template: >
       {
         "controller": "kb-dancer.batcave",
