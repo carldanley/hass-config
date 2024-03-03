@@ -11,7 +11,7 @@ automation:
   # dining room
   - platform: state
     entity_id: binary_sensor.dining_room_slider_contact
-    not_from:
+    not_from: &notFrom
     - "unknown"
     - "unavailable"
     id: dining-room
@@ -19,17 +19,13 @@ automation:
   # great room left
   - platform: state
     entity_id: binary_sensor.great_room_left_slider_contact
-    not_from:
-    - "unknown"
-    - "unavailable"
+    not_from: *notFrom
     id: great-room-left
 
   # great room right
   - platform: state
     entity_id: binary_sensor.great_room_right_slider_contact
-    not_from:
-    - "unknown"
-    - "unavailable"
+    not_from: *notFrom
     id: great-room-right
 
   action:
@@ -40,7 +36,7 @@ automation:
       - condition: trigger
         id: dining-room
       sequence:
-      - service: script.send_slider_movement_notification
+      - service: &notificationScript script.send_slider_movement_notification
         data:
           name: Dining Room Slider
           sensor: binary_sensor.dining_room_slider_contact
@@ -50,7 +46,7 @@ automation:
       - condition: trigger
         id: great-room-left
       sequence:
-      - service: script.send_slider_movement_notification
+      - service: *notificationScript
         data:
           name: Great Room Left Slider
           sensor: binary_sensor.great_room_left_slider_contact
@@ -60,14 +56,14 @@ automation:
       - condition: trigger
         id: great-room-right
       sequence:
-      - service: script.send_slider_movement_notification
+      - service: *notificationScript
         data:
           name: Great Room Right Slider
           sensor: binary_sensor.great_room_right_slider_contact
 
-#######################
-# OPENING PLAYS SOUND #
-#######################
+################################
+# OPENING A SLIDER PLAYS SOUND #
+################################
 
 - id: 53400e65-9275-49df-a9e0-ce12ec2b178c
   alias: sliders - opening plays sound
@@ -101,6 +97,10 @@ automation:
           volume: 70
 
 script:
+
+  #####################################
+  # SEND SLIDER MOVEMENT NOTIFICATION #
+  #####################################
 
   send_slider_movement_notification:
     alias: Send Slider Movement Notification

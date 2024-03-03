@@ -1,30 +1,3 @@
-group:
-
-  windows_all:
-    name: All Windows
-    entities:
-    - binary_sensor.dining_room_left_window_contact
-    - binary_sensor.dining_room_right_window_contact
-
-script:
-
-  #####################################
-  # SEND WINDOW MOVEMENT NOTIFICATION #
-  #####################################
-
-  send_window_movement_notification:
-    alias: Send Window Movement Notification
-    sequence:
-    - service: notify.critical_notification_audience
-      data:
-        title: >-
-          {% if (states(sensor) | lower) == 'on' %}
-            ⬆️ Window Opened ⬆️
-          {% else %}
-            ⬇️ Window Closed ⬇️
-          {% endif %}
-        message: "{{ name }}"
-
 automation:
 
 ##################################
@@ -45,10 +18,12 @@ automation:
         {% set speakers = "'media_player.great_room_cloud'" %}
         {% set speakers = speakers + ", 'media_player.office_cloud'" %}
         {% set speakers = speakers + ", 'media_player.roam_cloud'" %}
+        {% set speakers = speakers + ", 'media_player.master_bedroom_cloud'" %}
 
-        [{{ speakers }}]
+        {% set speakers = '[' + speakers + ']' %}
+        {{ speakers }}
       file: window-door-slider-beep.mp3
-      volume: 40
+      volume: 70
 
 ##################################
 # MOVEMENT TRIGGERS NOTIFICATION #
@@ -58,7 +33,7 @@ automation:
   alias: windows - movement triggers notification
   trigger:
 
-  # dining room (left)
+  # dining room left
   - platform: state
     entity_id: binary_sensor.dining_room_left_window_contact
     not_from: &notFrom
@@ -66,31 +41,195 @@ automation:
     - "unavailable"
     id: dining-room-left
 
-  # dining room (right)
+  # dining room right
   - platform: state
     entity_id: binary_sensor.dining_room_right_window_contact
     not_from: *notFrom
     id: dining-room-right
 
+  # great room left
+  - platform: state
+    entity_id: binary_sensor.great_room_left_window_contact
+    not_from: *notFrom
+    id: great-room-left
+
+  # great room right
+  - platform: state
+    entity_id: binary_sensor.great_room_right_window_contact
+    not_from: *notFrom
+    id: great-room-right
+
+  # master bedroom left
+  - platform: state
+    entity_id: binary_sensor.master_bedroom_left_window_contact
+    not_from: *notFrom
+    id: master-bedroom-left
+
+  # master bedroom right
+  - platform: state
+    entity_id: binary_sensor.master_bedroom_right_window_contact
+    not_from: *notFrom
+    id: master-bedroom-right
+
+  # pennys room left
+  - platform: state
+    entity_id: binary_sensor.pennys_room_left_window_contact
+    not_from: *notFrom
+    id: pennys-room-left
+
+  # pennys room right
+  - platform: state
+    entity_id: binary_sensor.pennys_room_right_window_contact
+    not_from: *notFrom
+    id: pennys-room-right
+
+  # sadies room bathroom
+  - platform: state
+    entity_id: binary_sensor.sadies_room_bathroom_window_contact
+    not_from: *notFrom
+    id: sadies-room-bathroom
+
+  # sadies room window
+  - platform: state
+    entity_id: binary_sensor.sadies_room_window_contact
+    not_from: *notFrom
+    id: sadies-room-window
+
   action:
   - choose:
 
-    # dining room (left)
+    # dining room left
     - conditions:
       - condition: trigger
         id: dining-room-left
       sequence:
-      - service: script.send_window_movement_notification
+      - service: &notificationScript script.send_window_movement_notification
         data:
-          name: Dining Room Window (Left)
+          name: Dining Room Left Window
           sensor: binary_sensor.dining_room_left_window_contact
 
-    # dining room (right)
+    # dining room right
     - conditions:
       - condition: trigger
         id: dining-room-right
       sequence:
-      - service: script.send_window_movement_notification
+      - service: *notificationScript
         data:
-          name: Dining Room Window (Right)
+          name: Dining Room Right Window
           sensor: binary_sensor.dining_room_right_window_contact
+
+    # great room left
+    - conditions:
+      - condition: trigger
+        id: great-room-left
+      sequence:
+      - service: *notificationScript
+        data:
+          name: Great Room Left Window
+          sensor: binary_sensor.great_room_left_window_contact
+
+    # great room right
+    - conditions:
+      - condition: trigger
+        id: great-room-right
+      sequence:
+      - service: *notificationScript
+        data:
+          name: Great Room Right Window
+          sensor: binary_sensor.great_room_right_window_contact
+    
+    # master bedroom left
+    - conditions:
+      - condition: trigger
+        id: master-bedroom-left
+      sequence:
+      - service: *notificationScript
+        data:
+          name: Master Bedroom Left Window
+          sensor: binary_sensor.master_bedroom_left_window_contact
+
+    # master bedroom right
+    - conditions:
+      - condition: trigger
+        id: master-bedroom-right
+      sequence:
+      - service: *notificationScript
+        data:
+          name: Master Bedroom Right Window
+          sensor: binary_sensor.master_bedroom_right_window_contact
+
+    # pennys room left
+    - conditions:
+      - condition: trigger
+        id: pennys-room-left
+      sequence:
+      - service: *notificationScript
+        data:
+          name: Penny's Room Left Window
+          sensor: binary_sensor.pennys_room_left_window_contact
+
+    # pennys room right
+    - conditions:
+      - condition: trigger
+        id: pennys-room-right
+      sequence:
+      - service: *notificationScript
+        data:
+          name: Penny's Room Right Window
+          sensor: binary_sensor.pennys_room_right_window_contact
+
+    # sadies room bathroom
+    - conditions:
+      - condition: trigger
+        id: sadies-room-bathroom
+      sequence:
+      - service: *notificationScript
+        data:
+          name: Sadie's Room Bathroom Window
+          sensor: binary_sensor.sadies_room_bathroom_window_contact
+
+    # sadies room window
+    - conditions:
+      - condition: trigger
+        id: sadies-room-window
+      sequence:
+      - service: *notificationScript
+        data:
+          name: Sadie's Room Window
+          sensor: binary_sensor.sadies_room_window_contact
+
+
+script:
+
+  #####################################
+  # SEND WINDOW MOVEMENT NOTIFICATION #
+  #####################################
+
+  send_window_movement_notification:
+    alias: Send Window Movement Notification
+    sequence:
+    - service: notify.critical_notification_audience
+      data:
+        title: >-
+          {% if (states(sensor) | lower) == 'on' %}
+            ⬆️ Window Opened ⬆️
+          {% else %}
+            ⬇️ Window Closed ⬇️
+          {% endif %}
+        message: "{{ name }}"
+
+group:
+
+  windows_all:
+    name: All Windows
+    entities:
+    - binary_sensor.dining_room_left_window_contact
+    - binary_sensor.dining_room_right_window_contact
+    - binary_sensor.great_room_left_window_contact
+    - binary_sensor.great_room_right_window_contact
+    - binary_sensor.master_bedroom_left_window_contact
+    - binary_sensor.master_bedroom_right_window_contact
+    - binary_sensor.pennys_room_left_window_contact
+    - binary_sensor.pennys_room_right_window_contact
+    - binary_sensor.sadies_room_bathroom_window_contact
+    - binary_sensor.sadies_room_window_contact
