@@ -16,6 +16,22 @@ automation:
     - "unavailable"
     id: dining-room
 
+  # great room left
+  - platform: state
+    entity_id: binary_sensor.great_room_left_slider_contact
+    not_from:
+    - "unknown"
+    - "unavailable"
+    id: great-room-left
+
+  # great room right
+  - platform: state
+    entity_id: binary_sensor.great_room_right_slider_contact
+    not_from:
+    - "unknown"
+    - "unavailable"
+    id: great-room-right
+
   action:
   - choose:
 
@@ -28,6 +44,26 @@ automation:
         data:
           name: Dining Room Slider
           sensor: binary_sensor.dining_room_slider_contact
+
+    # great room left
+    - conditions:
+      - condition: trigger
+        id: great-room-left
+      sequence:
+      - service: script.send_slider_movement_notification
+        data:
+          name: Great Room Left Slider
+          sensor: binary_sensor.great_room_left_slider_contact
+
+    # great room right
+    - conditions:
+      - condition: trigger
+        id: great-room-right
+      sequence:
+      - service: script.send_slider_movement_notification
+        data:
+          name: Great Room Right Slider
+          sensor: binary_sensor.great_room_right_slider_contact
 
 #######################
 # OPENING PLAYS SOUND #
@@ -85,3 +121,5 @@ group:
     name: All Sliders
     entities:
     - binary_sensor.dining_room_slider_contact
+    - binary_sensor.great_room_left_slider_contact
+    - binary_sensor.great_room_right_slider_contact
