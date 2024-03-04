@@ -365,7 +365,7 @@ automation:
       - condition: trigger
         id: tap
       - condition: state
-        entity_id: light.office_switch
+        entity_id: group.carls_office_lights_all
         state: 'on'
       sequence:
       - service: light.turn_off
@@ -385,7 +385,7 @@ automation:
           entity_id: group.carls_office_lights_all
         data:
           brightness_pct: >-
-            {% set brightness = state_attr('group.carls_office_lights_all', 'brightness') %}
+            {% set brightness = state_attr('light.office_accent_light_1', 'brightness') %}
             {% set step = 25 %}
             {% if not brightness %}
               0
@@ -411,7 +411,7 @@ automation:
           entity_id: group.carls_office_lights_all
         data:
           brightness_pct: >-
-            {% set brightness = state_attr('group.carls_office_lights_all', 'brightness') %}
+            {% set brightness = state_attr('light.office_accent_light_1', 'brightness') %}
             {% set step = 25 %}
             {% if not brightness %}
               25
@@ -487,7 +487,7 @@ automation:
 group:
 
   carls_office_lights_all:
-    name: All Sliders
+    name: All Carl's Office Lights
     entities:
     - light.office_accent_light_1
     - light.office_accent_light_2
