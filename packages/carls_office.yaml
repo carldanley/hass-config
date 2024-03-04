@@ -340,7 +340,7 @@ automation:
   action:
   - choose:
 
-    # tap on side 0 turns fan light on
+    # tap on side 0 turns lights on
     - conditions:
       - condition: state
         entity_id: sensor.carls_office_cube_side
@@ -353,11 +353,11 @@ automation:
       sequence:
       - service: light.turn_on
         target:
-          entity_id: light.office_switch
+          entity_id: group.carls_office_lights_all
         data:
           brightness_pct: 100
 
-    # tap on side 0 turns fan light off
+    # tap on side 0 turns light off
     - conditions:
       - condition: state
         entity_id: sensor.carls_office_cube_side
@@ -370,9 +370,9 @@ automation:
       sequence:
       - service: light.turn_off
         target:
-          entity_id: light.office_switch
+          entity_id: group.carls_office_lights_all
 
-    # rotate-left on side 0 decreases fan light brightness
+    # rotate-left on side 0 decreases light brightness
     - conditions:
       - condition: state
         entity_id: sensor.carls_office_cube_side
@@ -382,10 +382,10 @@ automation:
       sequence:
       - service: light.turn_on
         target:
-          entity_id: light.office_switch
+          entity_id: group.carls_office_lights_all
         data:
           brightness_pct: >-
-            {% set brightness = state_attr('light.office_switch', 'brightness') %}
+            {% set brightness = state_attr('group.carls_office_lights_all', 'brightness') %}
             {% set step = 25 %}
             {% if not brightness %}
               0
@@ -408,10 +408,10 @@ automation:
       sequence:
       - service: light.turn_on
         target:
-          entity_id: light.office_switch
+          entity_id: group.carls_office_lights_all
         data:
           brightness_pct: >-
-            {% set brightness = state_attr('light.office_switch', 'brightness') %}
+            {% set brightness = state_attr('group.carls_office_lights_all', 'brightness') %}
             {% set step = 25 %}
             {% if not brightness %}
               25
@@ -483,3 +483,11 @@ automation:
             {% else %}
               {{ newVolume / 100 }}
             {% endif %}
+
+group:
+
+  carls_office_lights_all:
+    name: All Sliders
+    entities:
+    - light.office_accent_light_1
+    - light.office_accent_light_2
