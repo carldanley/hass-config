@@ -348,7 +348,7 @@ automation:
       - condition: trigger
         id: tap
       - condition: state
-        entity_id: light.office_switch
+        entity_id: group.carls_office_lights_all
         state: 'off'
       sequence:
       - service: light.turn_on
