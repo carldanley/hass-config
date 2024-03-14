@@ -1,7 +1,11 @@
 automation:
 
+###############################
+# RISER LIGHTING IS AUTOMATED #
+###############################
+
 - id: 350ffb98-9205-4e9d-989f-4f5feafbe6e6
-  alias: bambu x1 carbon - automatically toggle riser lighting
+  alias: bambu x1 carbon - riser lighting is automated
   trigger:
 
   # riser-lighting-off
@@ -24,6 +28,18 @@ automation:
     not_to: *riserLightingOffStates
     id: riser-lighting-on
 
+  # enclosure-door-opened
+  - platform: state
+    entity_id: binary_sensor.x1c_00m09c411100527_enclosure_door
+    to: 'on'
+    id: enclosure-door-opened
+  
+  # enclosure-door-closed
+  - platform: state
+    entity_id: binary_sensor.x1c_00m09c411100527_enclosure_door
+    to: 'off'
+    id: enclosure-door-closed
+
   action:
   - choose:
 
@@ -42,5 +58,29 @@ automation:
         id: riser-lighting-on
       sequence:
       - service: switch.turn_on
+        target:
+            entity_id: switch.bambu_x1_carbon_riser_lighting
+
+    # enclosure-door-opened while idle
+    - conditions:
+      - condition: trigger
+        id: enclosure-door-opened
+      - condition: state
+        entity_id: sensor.x1c_00m09c411100527_current_stage
+        state: 'idle'
+      sequence:
+      - service: switch.turn_on
+        target:
+            entity_id: switch.bambu_x1_carbon_riser_lighting
+
+    # enclosure-door-closed while idle
+    - conditions:
+      - condition: trigger
+        id: enclosure-door-closed
+      - condition: state
+        entity_id: sensor.x1c_00m09c411100527_current_stage
+        state: 'idle'
+      sequence:
+      - service: switch.turn_off
         target:
             entity_id: switch.bambu_x1_carbon_riser_lighting
