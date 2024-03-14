@@ -1,0 +1,46 @@
+automation:
+
+- id: 350ffb98-9205-4e9d-989f-4f5feafbe6e6
+  alias: bambu x1 carbon - automatically toggle riser lighting
+  trigger:
+
+  # riser-lighting-off
+  - platform: state
+    entity_id: sensor.x1c_00m09c411100527_current_stage
+    to: &riserLightingOffStates
+    - scanning_bed_surface
+    - cleaning_nozzle_tip
+    - calibrating_extrusion
+    - calibrating_extrusion_flow
+    - calibrating_micro_lidar
+    - auto_bed_leveling
+    - offline
+    - idle
+    id: riser-lighting-off
+
+  # riser-lighting-on
+  - platform: state
+    entity_id: sensor.x1c_00m09c411100527_current_stage
+    not_to: *riserLightingOffStates
+    id: riser-lighting-on
+
+  action:
+  - choose:
+
+    # riser-lighting-off
+    - conditions:
+      - condition: trigger
+        id: riser-lighting-off
+      sequence:
+      - service: switch.turn_off
+        target:
+            entity_id: switch.bambu_x1_carbon_riser_lighting
+
+    # riser-lighting-on
+    - conditions:
+      - condition: trigger
+        id: riser-lighting-on
+      sequence:
+      - service: switch.turn_on
+        target:
+            entity_id: switch.bambu_x1_carbon_riser_lighting
