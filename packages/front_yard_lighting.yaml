@@ -45,13 +45,10 @@ automation:
       sequence:
       - service: switch.turn_on
         target:
-          entity_id: switch.porch_outlet_1
+          entity_id: switch.porch_kulp_outlet
       - service: switch.turn_on
         target:
-          entity_id: switch.porch_outlet_2
-      - service: switch.turn_on
-        target:
-          entity_id: switch.garage_outlet_1
+          entity_id: switch.garage_kulp_outlet
       - service: notify.info_notification_audience
         data:
           title: "💡 Front Yard Lights 💡"
@@ -113,13 +110,10 @@ automation:
       sequence:
       - service: switch.turn_off
         target:
-          entity_id: switch.porch_outlet_1
+          entity_id: switch.porch_kulp_outlet
       - service: switch.turn_off
         target:
-          entity_id: switch.porch_outlet_2
-      - service: switch.turn_off
-        target:
-          entity_id: switch.garage_outlet_1
+          entity_id: switch.garage_kulp_outlet
       - service: notify.info_notification_audience
         data:
           title: "💡 Front Yard Lights 💡"
