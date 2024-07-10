@@ -25,6 +25,47 @@ homeassistant:
 
 automation:
 
+#################################
+# LIGHTS AUTOMATICALLY TURN OFF #
+#################################
+
+- id: ddfc2a7f-6f42-496c-aab0-59aa059d2613
+  alias: coach lights - lights automatically turn off
+  trigger:
+
+  # off time 1
+  - platform: time
+    at: "2:00:00"
+    id: off-time-1
+
+  # off time 2
+  - platform: time
+    at: "4:00:00"
+    id: off-time-2
+
+  # off time 3
+  - platform: time
+    at: "6:00:00"
+    id: off-time-3
+
+  action:
+  - choose:
+
+    # any of the off times
+    - conditions:
+      - condition: or
+        conditions:
+        - condition: trigger
+          id: off-time-1
+        - condition: trigger
+          id: off-time-2
+        - condition: trigger
+          id: off-time-3
+      sequence:
+      - service: light.turn_off
+        target:
+          entity_id: group.lights_coach_lights
+
 #######################
 # SWITCH IS AUTOMATED #
 #######################
