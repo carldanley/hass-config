@@ -5,6 +5,42 @@ group:
     entities:
     - light.great_room_fan
     - light.great_room_lights_switch
+    - light.entertainment_center_left_bottom_1
+    - light.entertainment_center_left_bottom_2
+    - light.entertainment_center_left_bottom_3
+    - light.entertainment_center_left_bottom_4
+    - light.entertainment_center_right_bottom_1
+    - light.entertainment_center_right_bottom_2
+    - light.entertainment_center_right_bottom_3
+    - light.entertainment_center_right_bottom_4
+
+  lights_entertainment_center_all:
+    name: All Entertainment Center Lights
+    entities:
+    - light.entertainment_center_left_bottom_1
+    - light.entertainment_center_left_bottom_2
+    - light.entertainment_center_left_bottom_3
+    - light.entertainment_center_left_bottom_4
+    - light.entertainment_center_right_bottom_1
+    - light.entertainment_center_right_bottom_2
+    - light.entertainment_center_right_bottom_3
+    - light.entertainment_center_right_bottom_4
+
+  lights_entertainment_center_left_side:
+    name: All Entertainment Center Lights - Left Side
+    entities:
+    - light.entertainment_center_left_bottom_1
+    - light.entertainment_center_left_bottom_2
+    - light.entertainment_center_left_bottom_3
+    - light.entertainment_center_left_bottom_4
+
+  lights_entertainment_center_right_side:
+    name: All Entertainment Center Lights - Right Side
+    entities:
+    - light.entertainment_center_right_bottom_1
+    - light.entertainment_center_right_bottom_2
+    - light.entertainment_center_right_bottom_3
+    - light.entertainment_center_right_bottom_4
 
 homeassistant:
   customize:
