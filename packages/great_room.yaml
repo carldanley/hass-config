@@ -42,6 +42,22 @@ group:
     - light.entertainment_center_right_bottom_3
     - light.entertainment_center_right_bottom_4
 
+  lights_entertainment_center_alt_one:
+    name: Entertainment Center Alt One
+    entities:
+    - light.entertainment_center_left_bottom_4
+    - light.entertainment_center_left_bottom_2
+    - light.entertainment_center_right_bottom_3
+    - light.entertainment_center_right_bottom_1
+
+  lights_entertainment_center_alt_two:
+    name: Entertainment Center Alt Two
+    entities:
+    - light.entertainment_center_left_bottom_3
+    - light.entertainment_center_left_bottom_1
+    - light.entertainment_center_right_bottom_4
+    - light.entertainment_center_right_bottom_2
+
 homeassistant:
   customize:
 
