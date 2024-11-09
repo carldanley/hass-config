@@ -119,3 +119,87 @@ automation:
       - service: fan.turn_off
         target:
           entity_id: fan.great_room_fan
+
+#############################################
+# ENTERTAINMENT CENTER LIGHTS ARE AUTOMATED #
+#############################################
+
+- id: 90241217-af72-4b3e-8264-d3561627ba5d
+  alias: great room - entertainment center lights are automated
+  trigger:
+
+  # auto on time
+  - platform: sun
+    event: sunset
+    offset: "-00:30:00"
+    id: auto-on-time
+
+  # auto off time
+  - platform: time
+    at: "00:00:00"
+    id: auto-off-time
+
+  action:
+  - choose:
+
+    # auto on time
+    - conditions:
+      - condition: trigger
+        id: auto-on-time
+      sequence:
+      - service: light.turn_on
+        target:
+          entity_id: group.lights_entertainment_center_all
+        data:
+          brightness_pct: 100
+
+    # auto off time
+    - conditions:
+      - condition: trigger
+        id: auto-off-time
+      sequence:
+      - service: light.turn_off
+        target:
+          entity_id: group.lights_entertainment_center_all
+
+#######################################
+# CHRISTMAS TREE LIGHTS ARE AUTOMATED #
+#######################################
+
+- id: e9afbf45-5eed-4869-b2f3-a0cf56b23a00
+  alias: great room - christmas tree lights are automated
+  trigger:
+
+  # auto on time
+  - platform: sun
+    event: sunset
+    offset: "-00:30:00"
+    id: auto-on-time
+
+  # auto off time
+  - platform: time
+    at: "00:00:00"
+    id: auto-off-time
+
+  action:
+  - choose:
+
+    # auto on time
+    - conditions:
+      - condition: trigger
+        id: auto-on-time
+      sequence:
+      - service: light.turn_on
+        target:
+          entity_id: light.christmas_tree
+        data:
+          brightness_pct: 100
+
+    # auto off time
+    - conditions:
+      - condition: trigger
+        id: auto-off-time
+      sequence:
+      - service: light.turn_off
+        target:
+          entity_id: light.christmas_tree
