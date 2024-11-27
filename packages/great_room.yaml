@@ -152,6 +152,7 @@ automation:
           entity_id: group.lights_entertainment_center_all
         data:
           brightness_pct: 100
+      - service: script.fireplace_toggle_power
 
     # auto off time
     - conditions:
@@ -161,6 +162,7 @@ automation:
       - service: light.turn_off
         target:
           entity_id: group.lights_entertainment_center_all
+      - service: script.fireplace_toggle_power
 
 #######################################
 # CHRISTMAS TREE LIGHTS ARE AUTOMATED #
