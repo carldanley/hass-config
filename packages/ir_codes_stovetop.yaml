@@ -1,0 +1,27 @@
+script:
+
+  ###########################
+  # STOVETOP: TOGGLE LIGHTS #
+  ###########################
+
+  stovetop_toggle_lights:
+    alias: Stovetop - Toggle Lights
+    sequence:
+
+    - service: script.send_ir_code_to_blaster
+      data:
+        name: "Universal Remote Control"
+        ir_code: "B08jpRE+AoYGgAPAAeAHD8AB4AcXwA/gAwdAAUAPQAHAB+ADAcAT4AMHCRudTyO6CD4C///gAgcCCD4"
+
+  ###########################
+  # STOVETOP: TURN FAN DOWN #
+  ###########################
+
+  stovetop_toggle_lights:
+    alias: Stovetop - Turn Fan Down
+    sequence:
+
+    - service: script.send_ir_code_to_blaster
+      data:
+        name: "Universal Remote Control"
+        ir_code: "B1EjkBE/AoQGgAPAAeAHD8AB4AcXwA9AB0AB4AMHwAvAAcAPwAdAAUALQAMPgp1RI8cIPwL//1Ejxwg/Ag=="

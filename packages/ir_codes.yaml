@@ -1,18 +1,5 @@
 script:
 
-  #########################
-  # TURN FIREPLACE ON/OFF #
-  #########################
-  toggle_fireplace:
-    alias: Toggle Fireplace
-    sequence:
-
-    - service: script.send_ir_code_to_blaster
-      data:
-        name: "Universal Remote Control"
-        ir_code: >-
-          A/cElgFAAwa+AfcE9wSWIAXgAQNAEwGWAYADQAsFvgHoH/cEgBEGlgH3BPcEviAFQAmAA0AN4AMDAZYB4AEvQBcD9wSWAYADQA0BlgFABeAFA+APLwGWAUADAZYBQAUC9wS+4AADwC8BvgFAFwH3BEAF4AEDA74B9wTAAwCWIAsBlgHALwGWAUAXAfcEQAXgAQMEvgH3BJbgBANAL0AVB74BlgH3BPcEQAVAAwC+IA0BvgFACeAFA+AHLwG+AYADAJYgBwOWAZYBQAXgAQMBvgHgDy8BvgFAA+ADK4ALQC8BlgFAAwaWAfcE9wS+IAXgAQNAE+AFA0AvAb4BQAMGlgH3BPcEviAF4AEDQBMDvgH3BEAHgAPgGS8NlgH3BJYB9wSWAfcElgE=
-
   ################
   # SEND IR CODE #
   ################

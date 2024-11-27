@@ -1,0 +1,66 @@
+script:
+
+  ###########################
+  # FIREPLACE: TOGGLE POWER #
+  ###########################
+
+  fireplace_toggle_power:
+    alias: Fireplace - Toggle Power
+    sequence:
+
+    - service: script.send_ir_code_to_blaster
+      data:
+        name: "Universal Remote Control"
+        ir_code: "A/cElgFAAwa+AfcE9wSWIAXgAQNAEwGWAYADQAsFvgHoH/cEgBEGlgH3BPcEviAFQAmAA0AN4AMDAZYB4AEvQBcD9wSWAYADQA0BlgFABeAFA+APLwGWAUADAZYBQAUC9wS+4AADwC8BvgFAFwH3BEAF4AEDA74B9wTAAwCWIAsBlgHALwGWAUAXAfcEQAXgAQMEvgH3BJbgBANAL0AVB74BlgH3BPcEQAVAAwC+IA0BvgFACeAFA+AHLwG+AYADAJYgBwOWAZYBQAXgAQMBvgHgDy8BvgFAA+ADK4ALQC8BlgFAAwaWAfcE9wS+IAXgAQNAE+AFA0AvAb4BQAMGlgH3BPcEviAF4AEDQBMDvgH3BEAHgAPgGS8NlgH3BJYB9wSWAfcElgE="
+
+  #################################
+  # FIREPLACE: CHANGE FLAME COLOR #
+  #################################
+
+  fireplace_change_flame_color:
+    alias: Fireplace - Change Flame Color
+    sequence:
+
+    - service: script.send_ir_code_to_blaster
+      data:
+        name: "Universal Remote Control"
+        ir_code: "De4ErAHuBGcB8gHuBO4EQAvgCQMBrAHAFQH5H8AJBawB7gTuBEAF4AkDAawBwBXg/S/gLS9BkQGsAUADAawBQAVAA+FNTwNnAe4EgAPgAV8GZwHuBO4ErCAF4AGHgAsB8gFAG4ADwC8B8gFAHQXuBPIB7gRACeAFAwNnAe4EQAMBrAHALwGsAUAPBe4ErAHuBEAz4AUDQBuAA0AvAfIBQAMGZwHuBO4E8iAFQAPgBTdAG4AD4A8vAfIB4AEDBawBZwHuBIAD4AcvA6wB7gTgAyuACwlnAe4EZwHuBGcB"
+
+  #####################################
+  # FIREPLACE: CHANGE FLAME INTENSITY #
+  #####################################
+
+  fireplace_change_flame_intensity:
+    alias: Fireplace - Change Flame Intensity
+    sequence:
+
+    - service: script.send_ir_code_to_blaster
+      data:
+        name: "Universal Remote Control"
+        ir_code: "A/IElQFAAwbFAfIE8gSVIAVAA0ANQAcBlQFACUADAfIEQAsB7x9AB0ADBsUB8gTyBJUgBeAFAwGVAYARBfIElQHFAeABLwaVAfIE8gTFIAVACeABA0ARQAMF8gSVAZUB4AEvwBNAF4ADQBEBlQFABUADAfIEQAtALwHFAUADBZUB8gTyBEAF4AUDAcUBgBEF8gTFAZUBQC8BlQFAAwbFAfIE8gSVIAVACeABAwPFAfIEQBUF8gSVAZUBQC9AEQjFAZUB8gTyBMUgBUADQA1AAwHFAUAFQAMB8gRAC0AvA5UB8gRACwTyBPIExSAF4AUDQBdAAwLyBJUgC0AvAcUBQAMFlQHyBPIEQAUAxSAJ4AEDQBFAAwHyBEAL4AcvAcUB4AcDA5UB8gRAAwHyBEAL4FQvAgGVAQ=="
+
+  #################################
+  # FIREPLACE: CHANGE STONE COLOR #
+  #################################
+
+  fireplace_change_stone_color:
+    alias: Fireplace - Change Stone Color
+    sequence:
+
+    - service: script.send_ir_code_to_blaster
+      data:
+        name: "Universal Remote Control"
+        ir_code: "A/IEkQFAAwbBAfIE8gSRIAXgAQNAE0ADA/IEkQFAAwPBAfQfQAcD8gTBAUAFAfIEQAXAA4ATBcEB8gTyBIATAcEBQC8DwQHyBEALBPIE8gSRIAXgAQNAE0ADAfIEQAVAD0AvAZEBQAMFwQHyBPIEQAUAkSAJgANADUADA/IEkQFAAwHBAeAHLwGRAeABAwHBAcANAfIEQAlAD0AvAcEBQAMGkQHyBPIEwSAF4AEDQBNAAwPyBMEBQAMBkQHgGS8FwQHyBPIEQAUBwQHgES8DkQHyBEAfAfIEQAMC8gTBIAkDwQGRAeAZXwaRAfIE8gTBIAUDwQGRAcAvCJEBkQHyBPIEwSAF4AEDQBNAAwPyBMEBQAMBkQHAL0ALBPIE8gTBIAXgAQNAE0ADA/IEwQFAAwGRAeAkLwIBkQE="
+
+  ######################################
+  # FIREPLACE: CHANGE STONE BRIGHTNESS #
+  ######################################
+
+  fireplace_change_stone_brightness:
+    alias: Fireplace - Change Stone Brightness
+    sequence:
+
+    - service: script.send_ir_code_to_blaster
+      data:
+        name: "Universal Remote Control"
+        ir_code: "A/gEpwFAAwWnAfgE+ARABeABAwGnAeADDQf4BPgEjhz4BEAJB6cBpwH4BPgEQAXgAQMBpwHgAw0D+AT4BOD9L+CeLwIE+AQ="

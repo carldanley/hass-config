@@ -1,0 +1,53 @@
+script:
+
+  ########################
+  # HDMI SWITCH: INPUT 1 #
+  ########################
+
+  hdmi_switch_input_1:
+    alias: HDMI Switch - Input 1
+    sequence:
+
+    - service: script.send_ir_code_to_blaster
+      data:
+        name: "Universal Remote Control"
+        ir_code: "CY4jkRFBAosGQQLgFwFAI+AXA0ABwCPgCwFAG8ABQAvAAwn2m44jzghBAv//4AIHAghBAg=="
+
+  ########################
+  # HDMI SWITCH: INPUT 2 #
+  ########################
+
+  hdmi_switch_input_2:
+    alias: HDMI Switch - Input 2
+    sequence:
+
+    - service: script.send_ir_code_to_blaster
+      data:
+        name: "Universal Remote Control"
+        ir_code: "CaIjjRFCApAGQgLgFwFAI+APA0AB4Acb4AMBQBvgBwFAE8ADCfSboiPKCEIC///gAgcCCEIC"
+
+  ########################
+  # HDMI SWITCH: INPUT 3 #
+  ########################
+
+  hdmi_switch_input_3:
+    alias: HDMI Switch - Input 3
+    sequence:
+
+    - service: script.send_ir_code_to_blaster
+      data:
+        name: "Universal Remote Control"
+        ir_code: "CYojjxFAAosGQALgFwFAI+APA0ABQBvAAeADC0ABwA9AB0ADQAFAB8ADB/ubiiPWCEAC"
+
+  ########################
+  # HDMI SWITCH: INPUT 4 #
+  ########################
+
+  hdmi_switch_input_4:
+    alias: HDMI Switch - Input 4
+    sequence:
+
+    - service: script.send_ir_code_to_blaster
+      data:
+        name: "Universal Remote Control"
+        ir_code: "CaAjjxFFApMGRQLgFwFAI+APA+AHAUAn4AMBQA/gAwNAAeADDw/wm6Aj2ghFAv//oCPaCEUC"
