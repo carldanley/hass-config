@@ -26,5 +26,5 @@ script:
         evaluate_payload: false
         qos: "0"
         retain: false
-        topic: "zigbee2mqtt/{{ "name" }}/set/ir_code_to_send"
+        topic: "zigbee2mqtt/{{ name }}/set/ir_code_to_send"
         payload: "{{ ir_code }}"
