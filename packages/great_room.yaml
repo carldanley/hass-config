@@ -147,22 +147,27 @@ automation:
       - condition: trigger
         id: auto-on-time
       sequence:
-      - service: light.turn_on
-        target:
-          entity_id: group.lights_entertainment_center_all
-        data:
-          brightness_pct: 100
-      - service: script.fireplace_toggle_power
+      - parallel:
+        - service: light.turn_on
+          target:
+            entity_id: group.lights_entertainment_center_all
+          data:
+            brightness_pct: 100
+        - service: script.fireplace_toggle_power
 
     # auto off time
     - conditions:
       - condition: trigger
         id: auto-off-time
       sequence:
-      - service: light.turn_off
-        target:
-          entity_id: group.lights_entertainment_center_all
-      - service: script.fireplace_toggle_power
+      - parallel:
+        - service: light.turn_off
+          target:
+            entity_id: group.lights_entertainment_center_all
+        - sequence:
+          - service: script.fireplace_toggle_power
+          - delay: "00:00:10"
+          - service: script.fireplace_toggle_power
 
 #######################################
 # CHRISTMAS TREE LIGHTS ARE AUTOMATED #

@@ -183,13 +183,13 @@ automation:
         id: four-taps-down
       sequence:
       - parallel:
-      - service: light.turn_off
-        target:
-          entity_id: light.iaqualink_pool_lights
+        - service: light.turn_off
+          target:
+            entity_id: light.iaqualink_pool_lights
 
-      - service: light.turn_off
-        target:
-          entity_id: light.iaqualink_spa_lights
+        - service: light.turn_off
+          target:
+            entity_id: light.iaqualink_spa_lights
 
 #####################################
 # LIGHT SWITCH LIGHTS ARE AUTOMATED #
