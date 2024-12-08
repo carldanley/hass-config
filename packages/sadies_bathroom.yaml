@@ -4,7 +4,7 @@ automation:
 # HELP BUTTON PLAYS SOUND #
 ###########################
 
-- id: 2d531108-c11b-402e-8cec-105455b3d2fa
+- id: 8f56efdc-97e4-41e2-979e-f4d5c9ccd2e9
   alias: sadies bathroom - help button plays sound
   trigger:
 
