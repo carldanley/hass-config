@@ -9,7 +9,7 @@ automation:
   trigger:
 
   - trigger: mqtt
-    topic: "zigbee2mqtt/Sadie's Bathroom Help Button/action"
+    topic: "zigbee2mqtt/Sadies Bathroom Help Button/action"
     payload: "single"
     id: single-tap
 
