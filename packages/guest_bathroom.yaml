@@ -86,3 +86,35 @@ automation:
       - service: light.turn_off
         target:
           entity_id: light.guest_bathroom_vanity_switch
+
+###########################
+# HELP BUTTON PLAYS SOUND #
+###########################
+
+- id: 2d531108-c11b-402e-8cec-105455b3d2fa
+  alias: guest bathroom - help button plays sound
+  trigger:
+
+  - trigger: mqtt
+    topic: "zigbee2mqtt/Guest Bathroom Help Button/action"
+    payload: "single"
+    id: single-tap
+
+  action:
+
+  - conditions:
+    - condition: trigger
+      id: single-tap
+    sequence:
+    - service: script.sonos_cloud_play_local_sound
+      data_template:
+        speakers: >-
+          {% set speakers = "'media_player.great_room_cloud'" %}
+          {% set speakers = speakers + ", 'media_player.office_cloud'" %}
+          {% set speakers = speakers + ", 'media_player.roam_cloud'" %}
+          {% set speakers = speakers + ", 'media_player.master_bedroom_cloud'" %}
+
+          {% set speakers = '[' + speakers + ']' %}
+          {{ speakers }}
+        file: help-guest-bathroom.mp3
+        volume: 80
