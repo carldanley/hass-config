@@ -101,20 +101,21 @@ automation:
     id: single-tap
 
   action:
+  - choose:
 
-  - conditions:
-    - condition: trigger
-      id: single-tap
-    sequence:
-    - service: script.sonos_cloud_play_local_sound
-      data_template:
-        speakers: >-
-          {% set speakers = "'media_player.great_room_cloud'" %}
-          {% set speakers = speakers + ", 'media_player.office_cloud'" %}
-          {% set speakers = speakers + ", 'media_player.roam_cloud'" %}
-          {% set speakers = speakers + ", 'media_player.master_bedroom_cloud'" %}
+    - conditions:
+      - condition: trigger
+        id: single-tap
+      sequence:
+      - service: script.sonos_cloud_play_local_sound
+        data_template:
+          speakers: >-
+            {% set speakers = "'media_player.great_room_cloud'" %}
+            {% set speakers = speakers + ", 'media_player.office_cloud'" %}
+            {% set speakers = speakers + ", 'media_player.roam_cloud'" %}
+            {% set speakers = speakers + ", 'media_player.master_bedroom_cloud'" %}
 
-          {% set speakers = '[' + speakers + ']' %}
-          {{ speakers }}
-        file: help-guest-bathroom.mp3
-        volume: 80
+            {% set speakers = '[' + speakers + ']' %}
+            {{ speakers }}
+          file: help-guest-bathroom.mp3
+          volume: 80
