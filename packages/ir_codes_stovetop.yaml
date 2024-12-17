@@ -17,7 +17,7 @@ script:
   # STOVETOP: TURN FAN DOWN #
   ###########################
 
-  stovetop_toggle_lights:
+  stovetop_turn_fan_down:
     alias: Stovetop - Turn Fan Down
     sequence:
 
