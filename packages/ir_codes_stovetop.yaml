@@ -11,7 +11,7 @@ script:
     - service: script.send_ir_code_to_blaster
       data:
         name: "Stovetop Remote Control"
-        ir_code: "B08jpRE+AoYGgAPAAeAHD8AB4AcXwA/gAwdAAUAPQAHAB+ADAcAT4AMHCRudTyO6CD4C///gAgcCCD4"
+        ir_code: "CFwjehE8AoAGXCADBjwCPAJcAjwgAUALQAPgBwFAE0ADwAFAC+AFA+ABP0ABA4AGPALgBwHAEwGABuABKwolnVwjyghcAv//XCAHCTwC//9cI8oIPAI="
 
   ###########################
   # STOVETOP: TURN FAN DOWN #
