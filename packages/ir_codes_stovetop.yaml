@@ -10,7 +10,7 @@ script:
 
     - service: script.send_ir_code_to_blaster
       data:
-        name: "Universal Remote Control"
+        name: "Stovetop Remote Control"
         ir_code: "B08jpRE+AoYGgAPAAeAHD8AB4AcXwA/gAwdAAUAPQAHAB+ADAcAT4AMHCRudTyO6CD4C///gAgcCCD4"
 
   ###########################
@@ -23,5 +23,5 @@ script:
 
     - service: script.send_ir_code_to_blaster
       data:
-        name: "Universal Remote Control"
+        name: "Stovetop Remote Control"
         ir_code: "B1EjkBE/AoQGgAPAAeAHD8AB4AcXwA9AB0AB4AMHwAvAAcAPwAdAAUALQAMPgp1RI8cIPwL//1Ejxwg/Ag=="
