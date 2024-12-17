@@ -10,7 +10,7 @@ script:
 
     - service: script.send_ir_code_to_blaster
       data:
-        name: "Universal Remote Control"
+        name: "HDMI Remote Control"
         ir_code: "CY4jkRFBAosGQQLgFwFAI+AXA0ABwCPgCwFAG8ABQAvAAwn2m44jzghBAv//4AIHAghBAg=="
 
   ########################
@@ -23,7 +23,7 @@ script:
 
     - service: script.send_ir_code_to_blaster
       data:
-        name: "Universal Remote Control"
+        name: "HDMI Remote Control"
         ir_code: "CaIjjRFCApAGQgLgFwFAI+APA0AB4Acb4AMBQBvgBwFAE8ADCfSboiPKCEIC///gAgcCCEIC"
 
   ########################
@@ -36,7 +36,7 @@ script:
 
     - service: script.send_ir_code_to_blaster
       data:
-        name: "Universal Remote Control"
+        name: "HDMI Remote Control"
         ir_code: "CYojjxFAAosGQALgFwFAI+APA0ABQBvAAeADC0ABwA9AB0ADQAFAB8ADB/ubiiPWCEAC"
 
   ########################
@@ -49,5 +49,5 @@ script:
 
     - service: script.send_ir_code_to_blaster
       data:
-        name: "Universal Remote Control"
+        name: "HDMI Remote Control"
         ir_code: "CaAjjxFFApMGRQLgFwFAI+APA+AHAUAn4AMBQA/gAwNAAeADDw/wm6Aj2ghFAv//oCPaCEUC"
