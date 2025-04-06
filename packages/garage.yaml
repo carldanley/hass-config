@@ -21,4 +21,4 @@ automation:
       - parallel:
           - service: switch.toggle
             data:
-              entity_id: switch.fans_garage_ceiling
+              entity_id: group.fans_garage_ceiling
