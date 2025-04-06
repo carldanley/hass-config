@@ -1,0 +1,24 @@
+group:
+  fans_garage_ceiling:
+    name: All Garage Ceiling Fans
+    entities:
+      - switch.2_car_garage_ceiling_switch_l2
+      - switch.2_car_garage_ceiling_switch_l3
+
+automation:
+  ###############################################
+  # GARAGE DOOR FAN Button TOGGLES CEILING FANS #
+  ###############################################
+
+  - id: a7444d7c-8f9b-4c3e-964d-ef84d5b23e0c
+    alias: garage - fan button toggles ceiling fans
+    trigger:
+      - trigger: mqtt
+        topic: "zigbee2mqtt/Garage Ceiling Fans Button/action"
+        payload: "single"
+        id: single-tap
+    action:
+      - parallel:
+          - service: switch.toggle
+            data:
+              entity_id: switch.fans_garage_ceiling
