@@ -29,7 +29,7 @@ automation:
               - condition: trigger
                 id: pantry-door-open
             sequence:
-              - service: lights.turn_on
+              - service: light.turn_on
                 entity_id: light.pantry_accent_lights
 
           # pantry door closed
@@ -37,5 +37,5 @@ automation:
               - condition: trigger
                 id: pantry-door-closed
             sequence:
-              - service: lights.turn_off
+              - service: light.turn_off
                 entity_id: light.pantry_accent_lights
