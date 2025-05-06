@@ -18,9 +18,7 @@ automation:
       # pantry door closed
       - platform: state
         entity_id: binary_sensor.pantry_door_contact
-        not_from: &notFrom
-          - "unknown"
-          - "unavailable"
+        not_from: *notFrom
         to: "off"
         id: pantry-door-closed
 
