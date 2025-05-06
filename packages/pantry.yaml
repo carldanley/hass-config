@@ -1,0 +1,43 @@
+automation:
+  ######################################
+  # PANTRY ACCENT LIGHTS ARE AUTOMATED #
+  ######################################
+
+  - id: 664b63ab-9ab3-4b1a-81e2-ea7c6ab0aee4
+    alias: pantry - accent lights are automated
+    trigger:
+      # pantry door open
+      - platform: state
+        entity_id: binary_sensor.pantry_door_contact
+        not_from: &notFrom
+          - "unknown"
+          - "unavailable"
+        to: "on"
+        id: pantry-door-open
+
+      # pantry door closed
+      - platform: state
+        entity_id: binary_sensor.pantry_door_contact
+        not_from: &notFrom
+          - "unknown"
+          - "unavailable"
+        to: "off"
+        id: pantry-door-closed
+
+    action:
+      - choose:
+          # pantry door open
+          - conditions:
+              - condition: trigger
+                id: pantry-door-open
+            sequence:
+              - service: lights.turn_on
+                entity_id: light.pantry_accent_lights
+
+          # pantry door closed
+          - conditions:
+              - condition: trigger
+                id: pantry-door-closed
+            sequence:
+              - service: lights.turn_off
+                entity_id: light.pantry_accent_lights
